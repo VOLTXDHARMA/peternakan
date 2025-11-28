@@ -1,6 +1,3 @@
--- Seeder for progres_pelatihan table
--- Note: assumes users, pelatihan, and materi_pelatihan records exist with referenced ids.
-
 INSERT INTO progres_pelatihan (user_id, pelatihan_id, materi_terakhir_id, persentase_selesai, status, waktu_mulai, waktu_selesai)
 VALUES
 -- user 1 is halfway through pelatihan 1

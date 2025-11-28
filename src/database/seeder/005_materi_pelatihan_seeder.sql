@@ -1,6 +1,3 @@
--- Seeder for materi_pelatihan table
--- Note: assumes `pelatihan` records exist with ids referenced below.
-
 INSERT INTO materi_pelatihan (pelatihan_id, urutan, judul_materi, tipe_konten, konten_url, durasi_menit, deskripsi)
 VALUES
 -- Materials for pelatihan id 1
