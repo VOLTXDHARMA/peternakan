@@ -23,7 +23,7 @@ const getSqlFiles = (dir: string): string[] =>
         : [];
 
 const extractTableName = (filename: string): string => {
-    const match = filename.match(/^\d+_(.+?)_.*\.sql$/);
+    const match = filename.match(/^\d+_(.+?)_(migration|seeder)\.sql$/);
     return match ? match[1] : '';
 };
 

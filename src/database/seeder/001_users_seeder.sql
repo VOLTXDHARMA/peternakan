@@ -1,8 +1,8 @@
--- admin@example.com → admin123
--- test@example.com → test123
--- demo@example.com → demo123
+-- Password default semua: admin123, test123, demo123
+-- Hash bcrypt $2b$10$
 
-INSERT INTO users (name, email, password, created_at, updated_at) VALUES
-('Admin User', 'admin@example.com', '$2b$10$tJKiAdgxb8qFq62QwJQe0OyZQicSDbCA3KaM1O3c4kgqDPK1dR3yK', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('Test User', 'test@example.com', '$2b$10$5YeNj6l3O8f.z4Ek03Y3r.98nQYNO0BZxCtzDwKMpgn9rA1HvJU/G', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('Demo User', 'demo@example.com', '$2b$10$xV43cm1hZj4wPb5n92mJquMzDCXQksvT1nr5nrLNS7lBzRrwS52fK', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO users (id, username, email, password, nomor_hp, role, is_verified, create_at, update_at) VALUES
+('550e8400-e29b-41d4-a716-446655440000', 'admin', 'admin@example.com', '$2b$10$tKiAdgxU8gFG2Owjoe0YZOiSdBCA3KaMl03c4KgDPK1dR3yk.', '+6281234567890', 'pemrek', true, NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440001', 'investor1', 'investor1@example.com', '$2b$10$YVeUj6i308F.z4Ek03Y3r.98nQYN0oBZXctZDwMpGM9rA1HvJU/G', '+6289876543210', 'investor', true, NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440002', 'kios1', 'kios1@example.com', '$2b$10$xV43cm1hZj4wPb5n92mjqMzDCXQksvT1nr5nrLN571BZRrws52fK', '+6285551234567', 'penyedia_kios', true, NOW(), NOW())
+ON CONFLICT (id) DO NOTHING;
