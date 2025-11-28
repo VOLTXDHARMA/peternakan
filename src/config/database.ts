@@ -23,7 +23,10 @@ const getSqlFiles = (dir: string): string[] =>
         : [];
 
 const extractTableName = (filename: string): string => {
-    const match = filename.match(/^\d+_(.+?)_.*\.sql$/);
+    // Match filenames like `005_materi_pelatihan_seeder.sql` or `004_pelatihan_migration.sql`.
+    // Capture the full table name between the leading number and the final suffix
+    // (either `_migration.sql` or `_seeder.sql`).
+    const match = filename.match(/^\d+_(.+?)_(?:migration|seeder)\.sql$/);
     return match ? match[1] : '';
 };
 

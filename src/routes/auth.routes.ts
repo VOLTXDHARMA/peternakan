@@ -1,6 +1,12 @@
 import { Router } from 'express';
 import { login, refreshToken } from '../controllers/auth.controller';
 
+/* ===== TAMBAHAN START ===== */
+// Pastikan controller memanggil service loginUser dan refreshAccessToken
+// Contoh di controller:
+// login => memanggil loginUser(email, password)
+// refreshToken => memanggil refreshAccessToken(refreshToken)
+
 const router = Router();
 
 /**

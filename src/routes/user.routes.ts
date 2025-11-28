@@ -1,3 +1,5 @@
+
+// Import Router dari Express dan controller serta middleware terkait user
 import { Router } from 'express';
 import {
     getUser,
@@ -8,6 +10,8 @@ import {
 } from '../controllers/user.controller';
 import { authenticate } from '../middlewares/auth.middleware';
 
+
+// Inisialisasi router untuk endpoint user
 const router = Router();
 
 /**
@@ -23,6 +27,8 @@ const router = Router();
  *       200:
  *         description: List of users
  */
+
+// Endpoint untuk mendapatkan semua user (dengan autentikasi)
 router.get('/', authenticate, getUsers);
 
 /**
@@ -46,6 +52,8 @@ router.get('/', authenticate, getUsers);
  *       404:
  *         description: User not found
  */
+
+// Endpoint untuk mendapatkan user berdasarkan ID (dengan autentikasi)
 router.get('/:id', authenticate, getUser);
 
 /**
@@ -75,6 +83,8 @@ router.get('/:id', authenticate, getUser);
  *       201:
  *         description: User created
  */
+
+// Endpoint untuk membuat user baru (dengan autentikasi)
 router.post('/', authenticate, postUser);
 
 /**
@@ -107,6 +117,8 @@ router.post('/', authenticate, postUser);
  *       200:
  *         description: User updated
  */
+
+// Endpoint untuk mengupdate user berdasarkan ID (dengan autentikasi)
 router.put('/:id', authenticate, putUser);
 
 /**
@@ -128,6 +140,10 @@ router.put('/:id', authenticate, putUser);
  *       204:
  *         description: User deleted
  */
+
+// Endpoint untuk menghapus user berdasarkan ID (dengan autentikasi)
 router.delete('/:id', authenticate, deleteUserById);
 
+
+// Export router agar bisa digunakan di file utama
 export default router;
