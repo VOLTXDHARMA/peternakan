@@ -8,5 +8,9 @@ export const errorHandler = (
   next: NextFunction
 ) => {
   logger.error(err.message);
-  res.status(500).json({ message: err.message });
+  console.error('Error Stack:', err.stack); // tambah detail error
+  res.status(500).json({ 
+    message: err.message,
+    error: process.env.NODE_ENV === 'development' ? err.stack : undefined 
+  });
 };

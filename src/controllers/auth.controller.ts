@@ -1,6 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
-import { loginUser, refreshAccessToken } from '../services/auth.service';
+import { loginUser, registerUser, refreshAccessToken } from '../services/auth.service';
 import { successResponse } from '../utils/response';
+
+export const register = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { username, email, password, nomor_hp, role } = req.body;
+        const result = await registerUser(username, email, password, nomor_hp, role);
+        res.status(201).json({
+            status: 'success',
+            message: 'User registered successfully',
+            data: result
+        });
+    } catch (err) {
+        next(err);
+    }
+};
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
     try {

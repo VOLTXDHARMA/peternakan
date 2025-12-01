@@ -1,7 +1,61 @@
 import { Router } from 'express';
-import { login, refreshToken } from '../controllers/auth.controller';
+import { register, login, refreshToken } from '../controllers/auth.controller';
 
 const router = Router();
+
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register new user
+ *     tags: [Auth]
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *               - nomor_hp
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: johndoe
+ *               email:
+ *                 type: string
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *               nomor_hp:
+ *                 type: string
+ *                 example: +6281234567890
+ *               role:
+ *                 type: string
+ *                 enum: [pemrek, investor, penyedia_kios]
+ *                 example: investor
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *       400:
+ *         description: Email already registered
+ */
+router.post('/register', register);
 
 /**
  * @swagger

@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { findUserByEmail } from '../repositories/user.repository';
+import { findUserByEmail, insertUser } from '../repositories/user.repository';
 import { generateToken, verifyToken } from '../utils/jwt';
 import { JwtPayload } from 'jsonwebtoken';
 
@@ -34,6 +34,33 @@ export const loginUser = async (email: string, password: string) => {
   return { accessToken, refreshToken };
 };
 
+
+export const registerUser = async (username: string, email: string, password: string, nomor_hp: string, role?: string) => {
+  // cek apakah email sudah terdaftar
+  const existingUser = await findUserByEmail(email);
+  if (existingUser) {
+    throw new Error('Email already registered');
+  }
+
+  // hash password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // simpan user baru
+  const newUser = await insertUser({ username, email, password: hashedPassword, nomor_hp, role });
+
+  // generate tokens
+  const accessToken = generateToken(
+    { id: newUser.id, email: newUser.email },
+    { expiresIn: '15m' }
+  );
+
+  const refreshToken = generateToken(
+    { id: newUser.id, email: newUser.email },
+    { expiresIn: '7d' }
+  );
+
+  return { user: newUser, accessToken, refreshToken };
+};
 
 export const refreshAccessToken = async (refreshToken: string) => {
   try {
