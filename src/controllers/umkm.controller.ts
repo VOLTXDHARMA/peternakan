@@ -28,7 +28,9 @@ export const getUmkm = async (req: Request, res: Response, next: NextFunction) =
 
 export const postUmkm = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const data = await createUmkm(req.body);
+    // Extract user_id from JWT token (set by authenticate middleware)
+    const userId = (req as any).user.user_id;
+    const data = await createUmkm({ ...req.body, user_id: userId });
     successResponse(res, 'UMKM created', data, 201);
   } catch (err) {
     next(err);

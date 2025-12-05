@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    nomor_hp VARCHAR(20),
+    nomor_hp VARCHAR(20) NOT NULL,
     otp_code VARCHAR(10),
     otp_expired_at TIMESTAMP,
     is_verified BOOLEAN DEFAULT FALSE,

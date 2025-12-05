@@ -55,6 +55,6 @@ export const updateUmkm = async (id: string | number, data: Partial<{
 };
 
 export const deleteUmkm = async (id: string | number) => {
-    await db.query('DELETE FROM umkm WHERE id = $1', [id]);
-    return true;
+    const result = await db.query('DELETE FROM umkm WHERE id = $1', [id]);
+    return (result.rowCount ?? 0) > 0;
 };

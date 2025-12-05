@@ -3,7 +3,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 // Import fungsi layanan autentikasi
-import { loginUser, refreshAccessToken } from '../services/auth.service';
+import { loginUser, refreshAccessToken, registerUser } from '../services/auth.service';
 
 // Import utilitas untuk mengirim response sukses yang terstandarisasi
 import { successResponse } from '../utils/response';
@@ -33,6 +33,20 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
         const accessToken = await refreshAccessToken(refreshToken);
         // Kirim response sukses beserta access token baru
         successResponse(res, 'Token refreshed successfully', { accessToken });
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Controller untuk register user baru
+export const register = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // Ambil data dari body request
+        const { username, email, password, nomor_hp, role } = req.body;
+        // Panggil service untuk register user baru
+        const newUser = await registerUser({ username, email, password, nomor_hp, role });
+        // Kirim response sukses beserta data user baru
+        successResponse(res, 'User registered successfully', newUser, 201);
     } catch (err) {
         next(err);
     }

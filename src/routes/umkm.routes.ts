@@ -1,14 +1,13 @@
 
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import { authenticate } from '../middlewares/auth.middleware';
-
-
-// Dummy controller, ganti dengan implementasi asli jika sudah ada
-function getUmkms(req: Request, res: Response) { res.json([]); }
-function getUmkmById(req: Request, res: Response) { res.json({}); }
-function createUmkm(req: Request, res: Response) { res.status(201).json({}); }
-function updateUmkm(req: Request, res: Response) { res.json({}); }
-function deleteUmkm(req: Request, res: Response) { res.status(204).send(); }
+import {
+    getUmkms,
+    getUmkm,
+    postUmkm,
+    putUmkm,
+    deleteUmkm
+} from '../controllers/umkm.controller';
 
 const router = Router();
 
@@ -72,7 +71,22 @@ const router = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Umkm'
+ *             type: object
+ *             required:
+ *               - nama_lengkap
+ *               - jenis_usaha
+ *             properties:
+ *               nama_lengkap:
+ *                 type: string
+ *               jenis_usaha:
+ *                 type: string
+ *                 enum: [peternak, investor, penyedia_kios]
+ *               lokasi_peternakan:
+ *                 type: string
+ *               jenis_peternakan_utama:
+ *                 type: string
+ *               foto_profile:
+ *                 type: string
  *     responses:
  *       201:
  *         description: UMKM created
@@ -82,7 +96,7 @@ const router = Router();
  *               $ref: '#/components/schemas/Umkm'
  */
 router.get('/', authenticate, getUmkms);
-router.post('/', authenticate, createUmkm);
+router.post('/', authenticate, postUmkm);
 
 /**
  * @swagger
@@ -147,8 +161,8 @@ router.post('/', authenticate, createUmkm);
  *       204:
  *         description: UMKM deleted
  */
-router.get('/:id', authenticate, getUmkmById);
-router.put('/:id', authenticate, updateUmkm);
+router.get('/:id', authenticate, getUmkm);
+router.put('/:id', authenticate, putUmkm);
 router.delete('/:id', authenticate, deleteUmkm);
 
 export default router;

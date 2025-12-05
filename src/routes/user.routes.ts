@@ -60,11 +60,9 @@ router.get('/:id', authenticate, getUser);
  * @swagger
  * /users:
  *   post:
- *     summary: Create a new user
+ *     summary: Create a new user (Registration)
  *     tags:
  *       - User
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -72,20 +70,23 @@ router.get('/:id', authenticate, getUser);
  *           schema:
  *             type: object
  *             required:
- *               - name
+ *               - username
  *               - email
+ *               - password
  *             properties:
- *               name:
+ *               username:
  *                 type: string
  *               email:
  *                 type: string
+ *               password:
+ *                 type: string
  *     responses:
  *       201:
- *         description: User created
+ *         description: User created successfully
  */
 
-// Endpoint untuk membuat user baru (dengan autentikasi)
-router.post('/', authenticate, postUser);
+// Endpoint untuk membuat user baru (tanpa autentikasi untuk registrasi)
+router.post('/', postUser);
 
 /**
  * @swagger

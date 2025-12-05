@@ -64,8 +64,8 @@ export const postUser = async (
             return res.status(500).json({ message: 'Failed to create user' });
         }
 
-        // Kembalikan user yang berhasil dibuat dengan status 201
-        return res.status(201).json(newUser);
+        // Kembalikan user yang berhasil dibuat dengan response sukses
+        successResponse(res, 'User created successfully', newUser, 201);
     } catch (err) {
         next(err);
     }

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, refreshToken } from '../controllers/auth.controller';
+import { login, refreshToken, register } from '../controllers/auth.controller';
 
 /* ===== TAMBAHAN START ===== */
 // Pastikan controller memanggil service loginUser dan refreshAccessToken
@@ -91,5 +91,67 @@ router.post('/login', login);
  *         description: Invalid refresh token
  */
 router.post('/refresh', refreshToken);
+
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register new user
+ *     tags: [Auth]
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               nomor_hp:
+ *                 type: string
+ *                 description: Phone number (optional)
+ *               role:
+ *                 type: string
+ *                 enum: [peternak, investor, penyedia_kios, admin]
+ *                 description: User role (optional, defaults to peternak)
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     username:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     role:
+ *                       type: string
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *       400:
+ *         description: Bad request
+ */
+router.post('/register', register);
 
 export default router;

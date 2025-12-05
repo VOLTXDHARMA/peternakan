@@ -48,7 +48,7 @@ export const insertUser = async (data: {
             data.email,
             data.password,
             data.nomor_hp || null,
-            data.role || "user",
+            data.role || "peternak",
             true
         ]
     );

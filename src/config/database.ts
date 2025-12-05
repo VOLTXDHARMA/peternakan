@@ -69,11 +69,11 @@ const runMigrations = async () => {
         if (!table) continue;
 
         const empty = await isTableEmpty(db, table);
-        if (!empty) {
-            console.log(`✓ Skipping seeder ${file} (table '${table}' has data)`);
-        } else {
+        if (empty) {
             await runSqlFile(db, path.join(SEEDER_PATH, file));
             console.log(`🌱 Seeded: ${file}`);
+        } else {
+            console.log(`✓ Skipping seeder ${file} (table '${table}' is not empty)`);
         }
     }
 
