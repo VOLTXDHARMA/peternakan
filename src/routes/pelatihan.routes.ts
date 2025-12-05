@@ -16,6 +16,8 @@ const router = Router();
  *   get:
  *     tags: [Pelatihan]
  *     summary: Get all pelatihan
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: List of pelatihan
@@ -58,6 +60,8 @@ const router = Router();
  *                   updated_at:
  *                     type: string
  *                     format: date-time
+ *       401:
+ *         description: Unauthorized
  *   post:
  *     tags: [Pelatihan]
  *     summary: Create new pelatihan
@@ -106,7 +110,7 @@ const router = Router();
  *       401:
  *         description: Unauthorized
  */
-router.get('/', getPelatihans);
+router.get('/', authenticate, getPelatihans);
 router.post('/', authenticate, postPelatihan);
 
 /**
@@ -115,6 +119,8 @@ router.post('/', authenticate, postPelatihan);
  *   get:
  *     tags: [Pelatihan]
  *     summary: Get pelatihan by ID
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -125,6 +131,8 @@ router.post('/', authenticate, postPelatihan);
  *     responses:
  *       200:
  *         description: Pelatihan details
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Pelatihan not found
  *   put:
@@ -197,7 +205,7 @@ router.post('/', authenticate, postPelatihan);
  *       401:
  *         description: Unauthorized
  */
-router.get('/:id', getPelatihan);
+router.get('/:id', authenticate, getPelatihan);
 router.put('/:id', authenticate, putPelatihan);
 router.delete('/:id', authenticate, deletePelatihanById);
 

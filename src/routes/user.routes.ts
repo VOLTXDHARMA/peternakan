@@ -63,6 +63,8 @@ router.get('/:id', authenticate, getUser);
  *     summary: Create a new user (Registration)
  *     tags:
  *       - User
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -83,10 +85,12 @@ router.get('/:id', authenticate, getUser);
  *     responses:
  *       201:
  *         description: User created successfully
+ *       401:
+ *         description: Unauthorized
  */
 
-// Endpoint untuk membuat user baru (tanpa autentikasi untuk registrasi)
-router.post('/', postUser);
+// Endpoint untuk membuat user baru (dengan autentikasi)
+router.post('/', authenticate, postUser);
 
 /**
  * @swagger
