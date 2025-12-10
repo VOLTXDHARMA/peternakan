@@ -21,6 +21,9 @@ export const getByUserAndPelatihan = async (req: Request, res: Response) => {
 
 export const createProgres = async (req: Request, res: Response) => {
     const payload = req.body;
+    // ambil user id dari token JWT jika tersedia
+    const user = (req as any).user;
+    if (user && user.id) payload.user_id = user.id;
     const created = await service.create(payload);
     res.status(201).json({ data: created });
 };
@@ -28,6 +31,8 @@ export const createProgres = async (req: Request, res: Response) => {
 export const updateProgres = async (req: Request, res: Response) => {
     const id = req.params.id;
     const payload = req.body;
+    // jangan izinkan client mengubah user_id
+    if (payload.user_id) delete payload.user_id;
     const updated = await service.update(id, payload);
     if (!updated) return res.status(404).json({ message: 'Progres tidak ditemukan' });
     res.json({ data: updated });

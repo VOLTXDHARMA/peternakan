@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as controller from '../controllers/progres_pelatihan.controller';
+import { authenticate } from '../middlewares/auth.middleware';
 
 const router = Router();
 
@@ -28,9 +29,10 @@ const router = Router();
 
 router.get('/', controller.getAllProgres);
 router.get('/:id', controller.getProgresById);
-router.get('/user/:userId/pelatihan/:pelatihanId', controller.getByUserAndPelatihan);
-router.post('/', controller.createProgres);
-router.put('/:id', controller.updateProgres);
-router.delete('/:id', controller.deleteProgres);
+// user-specific route should be authenticated; server will still validate user_id
+router.get('/user/:userId/pelatihan/:pelatihanId', authenticate, controller.getByUserAndPelatihan);
+router.post('/', authenticate, controller.createProgres);
+router.put('/:id', authenticate, controller.updateProgres);
+router.delete('/:id', authenticate, controller.deleteProgres);
 
 export default router;
