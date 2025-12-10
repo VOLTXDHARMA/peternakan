@@ -25,4 +25,4 @@ INSERT INTO umkm (
     'Kambing & Domba',
     'profiles/ahmad-fauzi.jpg'
 );
--- only insert into `umkm` (previous duplicate insert into `pengguna` removed)
+-- umkm seeder
