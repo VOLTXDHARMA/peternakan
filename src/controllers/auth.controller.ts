@@ -56,3 +56,9 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
         next(err);
     }
 };
+
+export const logout = async (req: Request, res: Response) => {
+    // clear refresh token cookie
+    res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production' });
+    successResponse(res, 'Logged out successfully', {});
+};

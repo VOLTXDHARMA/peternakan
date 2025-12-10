@@ -26,16 +26,15 @@ const router = Router();
  *         foto_profile: { type: string, nullable: true }
  *     CreateUmkmRequest:
  *       type: object
- *       required: [user_id, nama_lengkap, jenis_usaha]
+ *       required: [nama_lengkap, jenis_usaha]
  *       properties:
- *         user_id: { type: string }
  *         nama_lengkap: { type: string }
  *         jenis_usaha: { type: string }
  *         lokasi_peternakan: { type: string }
  *         jenis_peternakan_utama: { type: string }
  *         foto_profile: { type: string }
+ *       description: "Note: `user_id` is set automatically from the authenticated token; do not include it in the request body."
  *       example:
- *         user_id: "550e8400-e29b-41d4-a716-446655440099"
  *         nama_lengkap: "Andi Petani"
  *         jenis_usaha: "peternak"
  *         lokasi_peternakan: "Desa Maju, Kab. Contoh"
