@@ -6,8 +6,8 @@ dotenv.config();
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_PORT = Number(process.env.DB_PORT) || 5432;
 const DB_USER = process.env.DB_USER || 'postgres';
-const DB_PASS = process.env.DB_PASS || 'postgres';
-const DB_NAME = process.env.DB_NAME || 'clean_arch_db';
+const DB_PASS = process.env.DB_PASS || '123';
+const DB_NAME = process.env.DB_NAME || 'peternakan';
 
 const main = async () => {
     const client = new Client({
