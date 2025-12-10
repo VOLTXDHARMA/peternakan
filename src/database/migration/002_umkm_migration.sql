@@ -1,5 +1,5 @@
 -- Pakai cara paling aman & cepat: VARCHAR + CHECK (tidak butuh ENUM)
-CREATE TABLE IF NOT EXISTS pengguna (
+CREATE TABLE IF NOT EXISTS umkm (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     nama_lengkap VARCHAR(100) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS pengguna (
 );
 
 -- Index biar cepat
-CREATE INDEX IF NOT EXISTS idx_pengguna_user_id ON pengguna(user_id);
+CREATE INDEX IF NOT EXISTS idx_umkm_user_id ON umkm(user_id);
 
 -- Auto update updated_at
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -25,7 +25,8 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
-CREATE TRIGGER update_pengguna_updated_at
-    BEFORE UPDATE ON pengguna
+DROP TRIGGER IF EXISTS update_umkm_updated_at ON umkm;
+CREATE TRIGGER update_umkm_updated_at
+    BEFORE UPDATE ON umkm
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();

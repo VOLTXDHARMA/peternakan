@@ -22,7 +22,6 @@ CREATE INDEX IF NOT EXISTS idx_ternak_user_id ON ternak(user_id);
 CREATE INDEX IF NOT EXISTS idx_ternak_kode ON ternak(kode_ternak);
 CREATE INDEX IF NOT EXISTS idx_ternak_status ON ternak(status);
 
--- Auto update updated_at
 DROP TRIGGER IF EXISTS update_ternak_updated_at ON ternak;
 CREATE TRIGGER update_ternak_updated_at
     BEFORE UPDATE ON ternak
