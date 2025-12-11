@@ -17,8 +17,14 @@ export const getAllUsers = async () => {
 };
 
 export const createUser = async (data: { username: string; email: string; password: string; nomor_hp?: string; role?: string }) => {
-    // ensure repository expects username, email, password, nomor_hp
-    return await insertUser({ username: data.username, email: data.email, password: data.password, nomor_hp: data.nomor_hp || '', role: data.role });
+    // map `username` field expected by repository
+    return await insertUser({
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        nomor_hp: data.nomor_hp || '',
+        role: data.role
+    });
 };
 
 export const updateUser = async (id: string, data: { username?: string; email?: string; nomor_hp?: string }) => {
@@ -30,4 +36,5 @@ export const updateUser = async (id: string, data: { username?: string; email?: 
 export const deleteUser = async (id: string) => {
     const success = await removeUserById(id);
     if (!success) throw new Error('User not found or delete failed');
+    return true;
 };
