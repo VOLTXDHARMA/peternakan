@@ -23,7 +23,7 @@ const options = {
             },
         },
     },
-    apis: ['./src/routes/*.ts'],
+    apis: ['./src/routes/auth.routes.ts', './src/routes/user.routes.ts', './src/routes/umkm.routes.ts', './src/routes/ternak.routes.ts', './src/routes/pelatihan.routes.ts'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

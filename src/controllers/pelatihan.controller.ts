@@ -41,7 +41,7 @@ type CreatePelatihanBody = {
     tingkat_kesulitan: string;
     durasi_menit: number;
     instruktur?: string;
-    tumbnail?: string;
+    thumbnail?: string;
     video_url?: string;
     dokumen_url?: string;
     passing_score?: number;

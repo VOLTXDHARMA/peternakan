@@ -12,59 +12,109 @@ const router = Router();
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     Pelatihan:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         judul_pelatihan:
+ *           type: string
+ *         deskripsi:
+ *           type: string
+ *         kategori:
+ *           type: string
+ *           enum: [manajemen_kandang, kesehatan, kewirausahaan, biosecurity]
+ *         tingkat_kesulitan:
+ *           type: string
+ *           enum: [pemula, menengah, lanjutan]
+ *         durasi_menit:
+ *           type: integer
+ *         instruktur:
+ *           type: string
+ *         thumbnail:
+ *           type: string
+ *         video_url:
+ *           type: string
+ *         dokumen_url:
+ *           type: string
+ *         passing_score:
+ *           type: integer
+ *         is_published:
+ *           type: boolean
+ *         created_at:
+ *           type: string
+ *           format: date-time
+ *         updated_at:
+ *           type: string
+ *           format: date-time
+ */
+
+/**
+ * @swagger
  * /pelatihan:
  *   get:
- *     tags: [Pelatihan]
  *     summary: Get all pelatihan
+ *     tags: [Pelatihan]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: List of pelatihan
+ *         description: List of pelatihan retrieved successfully
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                   judul_pelatihan:
- *                     type: string
- *                   deskripsi:
- *                     type: string
- *                   kategori:
- *                     type: string
- *                     enum: ["manajemen_kandang", "kesehatan", "kewirausahaan", "biosecurity"]
- *                   tingkat_kesulitan:
- *                     type: string
- *                     enum: ["pemula", "menengah", "lanjutan"]
- *                   durasi_menit:
- *                     type: integer
- *                   instruktur:
- *                     type: string
- *                   tumbnail:
- *                     type: string
- *                   video_url:
- *                     type: string
- *                   dokumen_url:
- *                     type: string
- *                   passing_score:
- *                     type: integer
- *                   is_published:
- *                     type: boolean
- *                   created_at:
- *                     type: string
- *                     format: date-time
- *                   updated_at:
- *                     type: string
- *                     format: date-time
- *       401:
- *         description: Unauthorized
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       judul_pelatihan:
+ *                         type: string
+ *                       deskripsi:
+ *                         type: string
+ *                       kategori:
+ *                         type: string
+ *                       tingkat_kesulitan:
+ *                         type: string
+ *                       durasi_menit:
+ *                         type: integer
+ *                       instruktur:
+ *                         type: string
+ *                       thumbnail:
+ *                         type: string
+ *                       video_url:
+ *                         type: string
+ *                       dokumen_url:
+ *                         type: string
+ *                       passing_score:
+ *                         type: integer
+ *                       is_published:
+ *                         type: boolean
+ *                       created_at:
+ *                         type: string
+ *                         format: date-time
+ *                       updated_at:
+ *                         type: string
+ *                         format: date-time
+ */
+router.get('/', authenticate, getPelatihans);
+
+/**
+ * @swagger
+ * /pelatihan:
  *   post:
+ *     summary: Create a new pelatihan
  *     tags: [Pelatihan]
- *     summary: Create new pelatihan
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -94,7 +144,7 @@ const router = Router();
  *                 type: integer
  *               instruktur:
  *                 type: string
- *               tumbnail:
+ *               thumbnail:
  *                 type: string
  *               video_url:
  *                 type: string
@@ -107,42 +157,129 @@ const router = Router();
  *     responses:
  *       201:
  *         description: Pelatihan created successfully
- *       401:
- *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     judul_pelatihan:
+ *                       type: string
+ *                     deskripsi:
+ *                       type: string
+ *                     kategori:
+ *                       type: string
+ *                     tingkat_kesulitan:
+ *                       type: string
+ *                     durasi_menit:
+ *                       type: integer
+ *                     instruktur:
+ *                       type: string
+ *                     thumbnail:
+ *                       type: string
+ *                     video_url:
+ *                       type: string
+ *                     dokumen_url:
+ *                       type: string
+ *                     passing_score:
+ *                       type: integer
+ *                     is_published:
+ *                       type: boolean
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *                     updated_at:
+ *                       type: string
+ *                       format: date-time
+ *       400:
+ *         description: Bad request
  */
-router.get('/', authenticate, getPelatihans);
 router.post('/', authenticate, postPelatihan);
 
 /**
  * @swagger
  * /pelatihan/{id}:
  *   get:
+ *     summary: Get a pelatihan by ID
  *     tags: [Pelatihan]
- *     summary: Get pelatihan by ID
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: id
- *         in: path
+ *       - in: path
+ *         name: id
  *         required: true
  *         schema:
  *           type: integer
  *         description: Pelatihan ID
  *     responses:
  *       200:
- *         description: Pelatihan details
- *       401:
- *         description: Unauthorized
+ *         description: Pelatihan retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     judul_pelatihan:
+ *                       type: string
+ *                     deskripsi:
+ *                       type: string
+ *                     kategori:
+ *                       type: string
+ *                     tingkat_kesulitan:
+ *                       type: string
+ *                     durasi_menit:
+ *                       type: integer
+ *                     instruktur:
+ *                       type: string
+ *                     thumbnail:
+ *                       type: string
+ *                     video_url:
+ *                       type: string
+ *                     dokumen_url:
+ *                       type: string
+ *                     passing_score:
+ *                       type: integer
+ *                     is_published:
+ *                       type: boolean
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *                     updated_at:
+ *                       type: string
+ *                       format: date-time
  *       404:
  *         description: Pelatihan not found
+ */
+router.get('/:id', authenticate, getPelatihan);
+
+/**
+ * @swagger
+ * /pelatihan/{id}:
  *   put:
+ *     summary: Update a pelatihan by ID
  *     tags: [Pelatihan]
- *     summary: Update pelatihan by ID
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: id
- *         in: path
+ *       - in: path
+ *         name: id
  *         required: true
  *         schema:
  *           type: integer
@@ -160,15 +297,13 @@ router.post('/', authenticate, postPelatihan);
  *                 type: string
  *               kategori:
  *                 type: string
- *                 enum: [manajemen_kandang, kesehatan, kewirausahaan, biosecurity]
  *               tingkat_kesulitan:
  *                 type: string
- *                 enum: [pemula, menengah, lanjutan]
  *               durasi_menit:
  *                 type: integer
  *               instruktur:
  *                 type: string
- *               tumbnail:
+ *               thumbnail:
  *                 type: string
  *               video_url:
  *                 type: string
@@ -181,18 +316,62 @@ router.post('/', authenticate, postPelatihan);
  *     responses:
  *       200:
  *         description: Pelatihan updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     judul_pelatihan:
+ *                       type: string
+ *                     deskripsi:
+ *                       type: string
+ *                     kategori:
+ *                       type: string
+ *                     tingkat_kesulitan:
+ *                       type: string
+ *                     durasi_menit:
+ *                       type: integer
+ *                     instruktur:
+ *                       type: string
+ *                     thumbnail:
+ *                       type: string
+ *                     video_url:
+ *                       type: string
+ *                     dokumen_url:
+ *                       type: string
+ *                     passing_score:
+ *                       type: integer
+ *                     is_published:
+ *                       type: boolean
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *                     updated_at:
+ *                       type: string
+ *                       format: date-time
  *       404:
  *         description: Pelatihan not found
- *       401:
- *         description: Unauthorized
+ */
+router.put('/:id', authenticate, putPelatihan);
+
+/**
+ * @swagger
+ * /pelatihan/{id}:
  *   delete:
+ *     summary: Delete a pelatihan by ID
  *     tags: [Pelatihan]
- *     summary: Delete pelatihan by ID
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: id
- *         in: path
+ *       - in: path
+ *         name: id
  *         required: true
  *         schema:
  *           type: integer
@@ -202,11 +381,7 @@ router.post('/', authenticate, postPelatihan);
  *         description: Pelatihan deleted successfully
  *       404:
  *         description: Pelatihan not found
- *       401:
- *         description: Unauthorized
  */
-router.get('/:id', authenticate, getPelatihan);
-router.put('/:id', authenticate, putPelatihan);
 router.delete('/:id', authenticate, deletePelatihanById);
 
 export default router;

@@ -18,11 +18,22 @@ CREATE TABLE IF NOT EXISTS pelatihan (
     tingkat_kesulitan tingkat_kesulitan_enum NOT NULL,
     durasi_menit INT NOT NULL,
     instruktur VARCHAR(100),
-    tumbnail VARCHAR(255),
-    video_url VARCHAR(255),
-    dokumen_url VARCHAR(255),
     passing_score INT DEFAULT 70,
     is_published BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Add missing columns if they don't exist
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'pelatihan' AND column_name = 'thumbnail') THEN
+        ALTER TABLE pelatihan ADD COLUMN thumbnail VARCHAR(255);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'pelatihan' AND column_name = 'video_url') THEN
+        ALTER TABLE pelatihan ADD COLUMN video_url VARCHAR(500);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'pelatihan' AND column_name = 'dokumen_url') THEN
+        ALTER TABLE pelatihan ADD COLUMN dokumen_url VARCHAR(500);
+    END IF;
+END $$;

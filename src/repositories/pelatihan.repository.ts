@@ -23,15 +23,12 @@ export const insertPelatihan = async (data: {
     tingkat_kesulitan: string;
     durasi_menit: number;
     instruktur?: string;
-    tumbnail?: string;
-    video_url?: string;
-    dokumen_url?: string;
     passing_score?: number;
     is_published?: boolean;
 }) => {
     const result = await db.query(
-        `INSERT INTO pelatihan (judul_pelatihan, deskripsi, kategori, tingkat_kesulitan, durasi_menit, instruktur, tumbnail, video_url, dokumen_url, passing_score, is_published)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
+        `INSERT INTO pelatihan (judul_pelatihan, deskripsi, kategori, tingkat_kesulitan, durasi_menit, instruktur, passing_score, is_published)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
         [
             data.judul_pelatihan,
             data.deskripsi,
@@ -39,9 +36,6 @@ export const insertPelatihan = async (data: {
             data.tingkat_kesulitan,
             data.durasi_menit,
             data.instruktur,
-            data.tumbnail,
-            data.video_url,
-            data.dokumen_url,
             data.passing_score || 70,
             data.is_published || false
         ]
@@ -57,7 +51,7 @@ export const updatePelatihan = async (id: string | number, data: Partial<{
     tingkat_kesulitan: string;
     durasi_menit: number;
     instruktur: string;
-    tumbnail: string;
+    thumbnail: string;
     video_url: string;
     dokumen_url: string;
     passing_score: number;

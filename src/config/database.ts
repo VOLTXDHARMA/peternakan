@@ -23,7 +23,7 @@ const getSqlFiles = (dir: string): string[] =>
         : [];
 
 const extractTableName = (filename: string): string => {
-    // Match filenames like `005_materi_pelatihan_seeder.sql` or `004_pelatihan_migration.sql`.
+    // Match filenames like `004_pelatihan_migration.sql`.
     // Capture the full table name between the leading number and the final suffix
     // (either `_migration.sql` or `_seeder.sql`).
     const match = filename.match(/^\d+_(.+?)_(?:migration|seeder)\.sql$/);
@@ -55,13 +55,9 @@ const runMigrations = async () => {
         const table = extractTableName(file);
         if (!table) continue;
 
-        const exists = await tableExists(db, table);
-        if (exists) {
-            console.log(`✓ Skipping migration ${file} (table '${table}' already exists)`);
-        } else {
-            await runSqlFile(db, path.join(MIGRATION_PATH, file));
-            console.log(`✅ Migrated: ${file}`);
-        }
+        // Always run migration files since they are idempotent (CREATE TABLE IF NOT EXISTS, ALTER TABLE with IF NOT EXISTS)
+        await runSqlFile(db, path.join(MIGRATION_PATH, file));
+        console.log(`✅ Migrated: ${file}`);
     }
 
     for (const file of seederFiles) {

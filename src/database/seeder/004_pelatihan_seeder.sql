@@ -1,4 +1,4 @@
-INSERT INTO pelatihan (judul_pelatihan, deskripsi, kategori, tingkat_kesulitan, durasi_menit, instruktur, tumbnail, video_url, dokumen_url, passing_score, is_published)
+INSERT INTO pelatihan (judul_pelatihan, deskripsi, kategori, tingkat_kesulitan, durasi_menit, instruktur, thumbnail, video_url, dokumen_url, passing_score, is_published)
 VALUES
 ('Manajemen Kandang Dasar', 'Dasar-dasar manajemen kandang: layout, sanitasi, dan rutinitas harian.', 'manajemen_kandang', 'pemula', 90, 'Dr. Budi Santoso', '/uploads/thumbs/kandang_dasar.jpg', 'https://youtu.be/example1', '/docs/manajemen_kandang_dasar.pdf', 70, TRUE),
 ('Kesehatan Unggas Praktis', 'Deteksi dini penyakit, vaksinasi, dan penanganan kasus lapangan.', 'kesehatan', 'menengah', 120, ' dr. Rina Wijaya', '/uploads/thumbs/kesehatan_unggas.jpg', 'https://youtu.be/example2', '/docs/kesehatan_unggas.pdf', 75, TRUE),
