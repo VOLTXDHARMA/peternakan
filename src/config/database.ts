@@ -10,7 +10,8 @@ export const db = new Client({
     port: Number(process.env.DB_PORT) || 5432,
     user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASS || '123',
-    database: process.env.DB_NAME || 'peternakan'
+    database: process.env.DB_NAME || 'peternakan',
+    application_name: process.env.DB_APP_NAME || 'peternakan-app'
 });
 
 // Helper functions
