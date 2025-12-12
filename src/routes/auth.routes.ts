@@ -106,7 +106,7 @@ router.post('/login', login);
  *   post:
  *     summary: Refresh access token
  *     tags: [Auth]
- *     security: []
+ *     security: [ { cookieAuth: [] } ]
  *     requestBody:
  *       required: true
  *       content:
@@ -140,13 +140,14 @@ router.post('/login', login);
  */
 router.post('/refresh', refreshToken);
 
+
 /**
  * @swagger
  * /auth/logout:
  *   post:
  *     summary: Logout user (clear refresh token cookie)
  *     tags: [Auth]
- *     security: []
+ *     security: [ { cookieAuth: [] } ]
  *     responses:
  *       200:
  *         description: Logged out
