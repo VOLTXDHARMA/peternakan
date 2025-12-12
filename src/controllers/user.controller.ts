@@ -47,12 +47,14 @@ export const getUsers = async (_req: Request, res: Response, next: NextFunction)
  */
 
 type CreateUserBody = {
-    name: string;
+    username: string;
     email: string;
     password: string;
+    nomor_hp?: string;
+    role?: string;
 };
 export const postUser = async (
-    req: Request<{}, {}, CreateUserBody>, 
+    req: Request<{}, {}, CreateUserBody>,
     res: Response, 
     next: NextFunction
 ): Promise<Response | void> => {

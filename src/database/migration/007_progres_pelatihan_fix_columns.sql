@@ -1,2 +1,0 @@
--- DEPRECATED: merged into 006_progres_pelatihan_migration.sql
--- Original fix content moved into 006; kept placeholder for history.
