@@ -1,4 +1,8 @@
+
+// Import tipe yang diperlukan dari Express untuk menangani HTTP request, response, dan middleware
 import { Request, Response, NextFunction } from 'express';
+
+// Import fungsi layanan terkait user untuk logika bisnis
 import {
     getUserDetail,
     getAllUsers,
@@ -6,8 +10,12 @@ import {
     updateUser,
     deleteUser
 } from '../services/user.service';
+
+// Import utilitas untuk mengirim response sukses yang terstandarisasi
 import { successResponse } from '../utils/response';
 
+
+// Controller untuk mendapatkan detail satu user berdasarkan ID
 export const getUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = await getUserDetail(req.params.id);
@@ -17,99 +25,80 @@ export const getUser = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
-/**
- * Handler to get all users.
- * 
- * @param _req - The request object (unused here).
- * @param res - The response object used to send back the desired HTTP response.
- * @param next - The next middleware function in the stack.
- */
+
+// Controller untuk mendapatkan daftar semua user
 export const getUsers = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        // Retrieve all users from the service
         const users = await getAllUsers();
-        
-        // Send a successful response with the retrieved users
         successResponse(res, 'User retrieved successfully', users);
     } catch (err) {
-        // Pass any errors to the next middleware
         next(err);
     }
 };
 
-/**
- * Creates a new user.
- *
- * @param req - Express request object containing the new user data in the body.
- * @param res - Express response object for sending the HTTP response.
- * @param next - Express next function to pass control to the next middleware.
- * @returns A Promise that resolves to the newly created user data, or rejects with an error.
- */
 
+// Tipe data untuk body yang diharapkan saat membuat user baru
 type CreateUserBody = {
     username: string;
     email: string;
     password: string;
-    nomor_hp?: string;
-    role?: string;
 };
+
+// Controller untuk membuat user baru
 export const postUser = async (
     req: Request<{}, {}, CreateUserBody>,
-    res: Response, 
+    res: Response,
     next: NextFunction
 ): Promise<Response | void> => {
+    // Cek apakah request body ada
     if (!req.body) {
         return res.status(400).json({ message: 'Request body is required' });
     }
-    
+
     try {
+        // Panggil service untuk membuat user baru
         const newUser = await createUser(req.body);
-        
+
+        // Jika pembuatan user gagal, kembalikan error
         if (newUser === null) {
             return res.status(500).json({ message: 'Failed to create user' });
         }
-        
-        res.status(201).json(newUser);
+
+        // Kembalikan user yang berhasil dibuat dengan response sukses
+        successResponse(res, 'User created successfully', newUser, 201);
     } catch (err) {
         next(err);
     }
 };
 
-/**
- * Updates a user by ID.
- *
- * @param req - Express request object containing the user ID in the parameters and the updated user data in the body.
- * @param res - Express response object for sending the HTTP response.
- * @param next - Express next function to pass control to the next middleware.
- * @returns A Promise that resolves to an object with a success message and the updated user data, or rejects with an error.
- */
+
+// Controller untuk mengupdate user berdasarkan ID
 export const putUser = async (
-    req: Request<{ id: string }, {}, { name?: string; email?: string }>,
+    req: Request<{ id: string }, {}, { username?: string; email?: string }>,
     res: Response,
     next: NextFunction
 ): Promise<Response | void> => {
     try {
+        // Panggil service untuk mengupdate user dengan ID dan body yang diberikan
         const updatedUser = await updateUser(req.params.id, req.body);
         if (!updatedUser) {
+            // Jika user tidak ditemukan atau update gagal, kembalikan 404
             return res.status(404).json({ message: 'User not found or update failed' });
         }
+        // Kembalikan data user yang sudah diupdate
         return res.status(200).json({ message: 'User updated successfully', data: updatedUser });
     } catch (error) {
         next(error);
     }
 };
 
-/**
- * Deletes a user by ID.
- *
- * @param req - Express request object containing the user ID in the parameters.
- * @param res - Express response object for sending the HTTP response.
- * @param next - Express next function to pass control to the next middleware.
- * @returns A Promise that resolves to void when the user is deleted.
- */
+
+// Controller untuk menghapus user berdasarkan ID
 export const deleteUserById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+        // Panggil service untuk menghapus user
         await deleteUser(req.params.id);
+        // Beri response 204 No Content jika berhasil
         res.status(204).send();
     } catch (err) {
         next(err);

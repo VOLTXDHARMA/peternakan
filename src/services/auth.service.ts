@@ -1,65 +1,81 @@
-﻿import bcrypt from 'bcrypt';
-import { findUserByEmail, insertUser } from '../repositories/user.repository';
+import bcrypt from 'bcrypt';
+import { findByEmail, insertUser } from '../repositories/user.repository';
 import { generateToken, verifyToken } from '../utils/jwt';
-import { JwtPayload } from 'jsonwebtoken';
 
-type UserLike = { id: string; email: string };
-
-export const createAuthTokens = (user: UserLike) => {
-  const accessToken = generateToken({ id: user.id, email: user.email }, { expiresIn: '15m' });
-  const refreshToken = generateToken({ id: user.id, email: user.email }, { expiresIn: '7d' });
-  return { accessToken, refreshToken };
-};
-
+// Service untuk login user
 export const loginUser = async (email: string, password: string) => {
-  // cek user berdasarkan email
-  const user = await findUserByEmail(email);
-  if (!user) {
-    throw new Error('Invalid email on data base');
-  }
+    // Cari user berdasarkan email
+    const user = await findByEmail(email);
+    if (!user) {
+        throw new Error('Invalid credentials');
+    }
 
-  // cek password hash
-  const isValidPassword = await bcrypt.compare(password, user.password);
-  if (!isValidPassword) {
-    throw new Error('Invalid email or password');
-  }
+    // Verifikasi password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+        throw new Error('Invalid credentials');
+    }
 
-  // generate tokens
-  return createAuthTokens({ id: user.id, email: user.email });
+    // Generate tokens
+    const accessToken = generateToken(
+        { id: user.id, email: user.email, role: user.role },
+        { expiresIn: '15m' }
+    );
+    const refreshToken = generateToken(
+        { id: user.id, email: user.email },
+        { expiresIn: '7d' }
+    );
+
+    return { accessToken, refreshToken };
 };
 
-export const registerUser = async (
-  username: string,
-  email: string,
-  password: string,
-  nomor_hp: string,
-  role?: string
-) => {
-  // cek apakah email sudah terdaftar
-  const existingUser = await findUserByEmail(email);
-  if (existingUser) {
-    throw new Error('Email already registered');
-  }
-
-  // hash password
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // simpan user baru
-  const newUser = await insertUser({ username, email, password: hashedPassword, nomor_hp, role });
-
-  // generate tokens
-  const tokens = createAuthTokens({ id: newUser.id, email: newUser.email });
-  return { user: newUser, ...tokens };
-};
-
+// Service untuk refresh access token
 export const refreshAccessToken = async (refreshToken: string) => {
-  try {
-    const decoded = verifyToken(refreshToken) as JwtPayload;
+    try {
+        // Verifikasi refresh token
+        const decoded = verifyToken(refreshToken) as any;
 
-    // generate access token baru
-    return generateToken({ id: decoded.id, email: decoded.email }, { expiresIn: '15m' });
+        // Cari user berdasarkan ID dari token
+        const user = await findByEmail(decoded.email);
+        if (!user) {
+            throw new Error('Invalid refresh token');
+        }
 
-  } catch (err) {
-    throw new Error('Invalid refresh token');
-  }
+        // Generate access token baru
+        const accessToken = generateToken(
+            { id: user.id, email: user.email, role: user.role },
+            { expiresIn: '15m' }
+        );
+
+        return accessToken;
+    } catch (error) {
+        throw new Error('Invalid refresh token');
+    }
+};
+
+// Service untuk register user baru
+export const registerUser = async (data: {
+    username: string;
+    email: string;
+    password: string;
+    nomor_hp?: string;
+    role?: string;
+}) => {
+    // Cek apakah email sudah terdaftar
+    const existingUser = await findByEmail(data.email);
+    if (existingUser) {
+        throw new Error('Email already registered');
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+    // Insert user baru
+    const newUser = await insertUser({
+        ...data,
+        password: hashedPassword,
+        role: data.role || 'peternak'
+    });
+
+    return newUser;
 };

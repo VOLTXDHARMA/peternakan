@@ -1,61 +1,13 @@
 import { Router } from 'express';
-import { register, login, refreshToken, logout } from '../controllers/auth.controller';
+import { login, refreshToken, register } from '../controllers/auth.controller';
+
+/* ===== TAMBAHAN START ===== */
+// Pastikan controller memanggil service loginUser dan refreshAccessToken
+// Contoh di controller:
+// login => memanggil loginUser(email, password)
+// refreshToken => memanggil refreshAccessToken(refreshToken)
 
 const router = Router();
-
-/**
- * @swagger
- * /auth/register:
- *   post:
- *     summary: Register new user
- *     tags: [Auth]
- *     security: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - username
- *               - email
- *               - password
- *               - nomor_hp
- *             properties:
- *               username:
- *                 type: string
- *                 example: johndoe
- *               email:
- *                 type: string
- *                 example: john@example.com
- *               password:
- *                 type: string
- *                 example: password123
- *               nomor_hp:
- *                 type: string
- *                 example: +6281234567890
- *               role:
- *                 type: string
- *                 enum: [pemrek, investor, penyedia_kios]
- *                 example: investor
- *     responses:
- *       201:
- *         description: User registered successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
- *       400:
- *         description: Email already registered
- */
-router.post('/register', register);
 
 /**
  * @swagger
@@ -106,7 +58,7 @@ router.post('/login', login);
  *   post:
  *     summary: Refresh access token
  *     tags: [Auth]
- *     security: [ { cookieAuth: [] } ]
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -140,18 +92,66 @@ router.post('/login', login);
  */
 router.post('/refresh', refreshToken);
 
-
 /**
  * @swagger
- * /auth/logout:
+ * /auth/register:
  *   post:
- *     summary: Logout user (clear refresh token cookie)
+ *     summary: Register new user
  *     tags: [Auth]
- *     security: [ { cookieAuth: [] } ]
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               nomor_hp:
+ *                 type: string
+ *                 description: Phone number (optional)
+ *               role:
+ *                 type: string
+ *                 enum: [peternak, investor, penyedia_kios, admin]
+ *                 description: User role (optional, defaults to peternak)
  *     responses:
- *       200:
- *         description: Logged out
+ *       201:
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     username:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     role:
+ *                       type: string
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *       400:
+ *         description: Bad request
  */
-router.post('/logout', logout);
+router.post('/register', register);
 
 export default router;

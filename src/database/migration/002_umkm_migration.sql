@@ -1,32 +1,28 @@
--- Pakai cara paling aman & cepat: VARCHAR + CHECK (tidak butuh ENUM)
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_type WHERE typname = 'jenis_usaha_enum'
+    ) THEN
+        CREATE TYPE jenis_usaha_enum AS ENUM (
+            'peternak',
+            'investor',
+            'penyedia_kios'
+        );
+    END IF;
+END$$;
+
 CREATE TABLE IF NOT EXISTS umkm (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL UNIQUE,
     nama_lengkap VARCHAR(100) NOT NULL,
-    jenis_usaha VARCHAR(20) NOT NULL CHECK (
-        jenis_usaha IN ('peternak', 'investor', 'penyedia_kios')
-    ),
+    jenis_usaha jenis_usaha_enum NOT NULL,
     lokasi_peternakan TEXT,
     jenis_peternakan_utama VARCHAR(100),
     foto_profile VARCHAR(100),
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
+    updated_at TIMESTAMP DEFAULT NOW(),
+
+    CONSTRAINT fk_umkm_user FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
 );
-
--- Index biar cepat
-CREATE INDEX IF NOT EXISTS idx_umkm_user_id ON umkm(user_id);
-
--- Auto update updated_at
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
-DROP TRIGGER IF EXISTS update_umkm_updated_at ON umkm;
-CREATE TRIGGER update_umkm_updated_at
-    BEFORE UPDATE ON umkm
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();

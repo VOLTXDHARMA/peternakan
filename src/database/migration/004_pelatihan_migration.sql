@@ -1,32 +1,39 @@
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'kategori_enum') THEN
+        CREATE TYPE kategori_enum AS ENUM ('manajemen_kandang','kesehatan','kewirausahaan','biosecurity');
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tingkat_kesulitan_enum') THEN
+        CREATE TYPE tingkat_kesulitan_enum AS ENUM ('pemula','menengah','lanjutan');
+    END IF;
+END$$;
+
+-- Create table pelatihan (if not exists)
 CREATE TABLE IF NOT EXISTS pelatihan (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id SERIAL PRIMARY KEY,
     judul_pelatihan VARCHAR(200) NOT NULL,
     deskripsi TEXT NOT NULL,
-    kategori VARCHAR(50) NOT NULL CHECK (kategori IN (
-        'manajemen_kandang', 'kesehatan', 'kewirausahaan', 'pakan', 'reproduksi'
-    )),
-    tingkat_kesulitan VARCHAR(20) NOT NULL CHECK (tingkat_kesulitan IN (
-        'pemula', 'menengah', 'lanjutan'
-    )),
-    durasi_menit INT NOT NULL CHECK (durasi_menit > 0),
+    kategori kategori_enum NOT NULL,
+    tingkat_kesulitan tingkat_kesulitan_enum NOT NULL,
+    durasi_menit INT NOT NULL,
     instruktur VARCHAR(100),
-    thumbnail VARCHAR(255),
-    video_url VARCHAR(255),
-    dokumen_url VARCHAR(255),
-    passing_score INT DEFAULT 70 CHECK (passing_score BETWEEN 0 AND 100),
+    passing_score INT DEFAULT 70,
     is_published BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Index biar cepat cari
-CREATE INDEX IF NOT EXISTS idx_pelatihan_kategori ON pelatihan(kategori);
-CREATE INDEX IF NOT EXISTS idx_pelatihan_published ON pelatihan(is_published);
-CREATE INDEX IF NOT EXISTS idx_pelatihan_tingkat ON pelatihan(tingkat_kesulitan);
-
--- Auto update updated_at
-DROP TRIGGER IF EXISTS update_pelatihan_updated_at ON pelatihan;
-CREATE TRIGGER update_pelatihan_updated_at
-    BEFORE UPDATE ON pelatihan
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+-- Add missing columns if they don't exist
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'pelatihan' AND column_name = 'thumbnail') THEN
+        ALTER TABLE pelatihan ADD COLUMN thumbnail VARCHAR(255);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'pelatihan' AND column_name = 'video_url') THEN
+        ALTER TABLE pelatihan ADD COLUMN video_url VARCHAR(500);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'pelatihan' AND column_name = 'dokumen_url') THEN
+        ALTER TABLE pelatihan ADD COLUMN dokumen_url VARCHAR(500);
+    END IF;
+END $$;

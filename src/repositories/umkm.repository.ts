@@ -1,22 +1,28 @@
 import { db } from '../config/database';
 
-const baseSelect = `SELECT id, user_id, nama_lengkap, jenis_usaha, lokasi_peternakan, jenis_peternakan_utama, foto_profile, created_at, updated_at FROM umkm`;
+// ===== REPOSITORY UMKM =====
 
 export const findAllUmkm = async () => {
-    const result = await db.query(baseSelect + ' ORDER BY created_at DESC');
+    const result = await db.query('SELECT * FROM umkm');
     return result.rows;
 };
 
-export const findUmkmById = async (id: string) => {
-    const result = await db.query(baseSelect + ' WHERE id = $1', [id]);
+export const findUmkmById = async (id: string | number) => {
+    const result = await db.query('SELECT * FROM umkm WHERE id = $1', [id]);
     return result.rows[0] || null;
 };
 
-export const insertUmkm = async (data: any) => {
+export const insertUmkm = async (data: {
+    user_id: number;
+    nama_lengkap: string;
+    jenis_usaha: string;
+    lokasi_peternakan?: string;
+    jenis_peternakan_utama?: string;
+    foto_profile?: string;
+}) => {
     const result = await db.query(
         `INSERT INTO umkm (user_id, nama_lengkap, jenis_usaha, lokasi_peternakan, jenis_peternakan_utama, foto_profile)
-         VALUES ($1,$2,$3,$4,$5,$6)
-         RETURNING id, user_id, nama_lengkap, jenis_usaha, lokasi_peternakan, jenis_peternakan_utama, foto_profile, created_at, updated_at`,
+         VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
         [
             data.user_id,
             data.nama_lengkap,
@@ -29,25 +35,26 @@ export const insertUmkm = async (data: any) => {
     return result.rows[0];
 };
 
-export const updateUmkm = async (id: string, data: any) => {
-    const existing = await findUmkmById(id);
-    if (!existing) return null;
-    const merged = {
-        nama_lengkap: data.nama_lengkap ?? existing.nama_lengkap,
-        jenis_usaha: data.jenis_usaha ?? existing.jenis_usaha,
-        lokasi_peternakan: data.lokasi_peternakan ?? existing.lokasi_peternakan,
-        jenis_peternakan_utama: data.jenis_peternakan_utama ?? existing.jenis_peternakan_utama,
-        foto_profile: data.foto_profile ?? existing.foto_profile
-    };
+export const updateUmkm = async (id: string | number, data: Partial<{
+    user_id: number;
+    nama_lengkap: string;
+    jenis_usaha: string;
+    lokasi_peternakan: string;
+    jenis_peternakan_utama: string;
+    foto_profile: string;
+}>) => {
+    const fields = Object.keys(data);
+    const values = Object.values(data);
+    if (fields.length === 0) return null;
+    const setClause = fields.map((f, i) => `${f} = $${i + 2}`).join(', ');
     const result = await db.query(
-        `UPDATE umkm SET nama_lengkap=$1, jenis_usaha=$2, lokasi_peternakan=$3, jenis_peternakan_utama=$4, foto_profile=$5, updated_at=NOW()
-         WHERE id=$6 RETURNING id, user_id, nama_lengkap, jenis_usaha, lokasi_peternakan, jenis_peternakan_utama, foto_profile, created_at, updated_at`,
-        [merged.nama_lengkap, merged.jenis_usaha, merged.lokasi_peternakan, merged.jenis_peternakan_utama, merged.foto_profile, id]
+        `UPDATE umkm SET ${setClause} WHERE id = $1 RETURNING *`,
+        [id, ...values]
     );
     return result.rows[0];
 };
 
-export const deleteUmkm = async (id: string): Promise<boolean> => {
+export const deleteUmkm = async (id: string | number) => {
     const result = await db.query('DELETE FROM umkm WHERE id = $1', [id]);
     return (result.rowCount ?? 0) > 0;
 };

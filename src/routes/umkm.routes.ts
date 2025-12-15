@@ -1,15 +1,16 @@
+
 import { Router } from 'express';
 import { authenticate } from '../middlewares/auth.middleware';
-import * as controller from '../controllers/umkm.controller';
+import {
+    getUmkms,
+    getUmkm,
+    postUmkm,
+    putUmkm,
+    deleteUmkm
+} from '../controllers/umkm.controller';
 
 const router = Router();
 
-/**
- * @swagger
- * tags:
- *   - name: Umkm
- *     description: Manajemen data umkm
- */
 /**
  * @swagger
  * components:
@@ -17,147 +18,151 @@ const router = Router();
  *     Umkm:
  *       type: object
  *       properties:
- *         id: { type: string }
- *         user_id: { type: string }
- *         nama_lengkap: { type: string }
- *         jenis_usaha: { type: string }
- *         lokasi_peternakan: { type: string, nullable: true }
- *         jenis_peternakan_utama: { type: string, nullable: true }
- *         foto_profile: { type: string, nullable: true }
- *     CreateUmkmRequest:
- *       type: object
- *       required: [nama_lengkap, jenis_usaha]
- *       properties:
- *         nama_lengkap: { type: string }
- *         jenis_usaha: { type: string }
- *         lokasi_peternakan: { type: string }
- *         jenis_peternakan_utama: { type: string }
- *         foto_profile: { type: string }
- *       description: "Note: `user_id` is set automatically from the authenticated token; do not include it in the request body."
- *       example:
- *         nama_lengkap: "Andi Petani"
- *         jenis_usaha: "peternak"
- *         lokasi_peternakan: "Desa Maju, Kab. Contoh"
- *         jenis_peternakan_utama: "Sapi Potong"
- *         foto_profile: "profiles/andi.jpg"
- *     UpdateUmkmRequest:
- *       type: object
- *       properties:
- *         nama_lengkap: { type: string }
- *         jenis_usaha: { type: string }
- *         lokasi_peternakan: { type: string }
- *         jenis_peternakan_utama: { type: string }
- *         foto_profile: { type: string }
- *       example:
- *         nama_lengkap: "Andi Petani Updated"
- *         jenis_usaha: "peternak"
- *         lokasi_peternakan: "Desa Maju RT 02"
+ *         id:
+ *           type: integer
+ *         user_id:
+ *           type: integer
+ *         nama_lengkap:
+ *           type: string
+ *         jenis_usaha:
+ *           type: string
+ *           enum: [peternak, investor, penyedia_kios]
+ *         lokasi_peternakan:
+ *           type: string
+ *         jenis_peternakan_utama:
+ *           type: string
+ *         foto_profile:
+ *           type: string
+ *         created_at:
+ *           type: string
+ *           format: date-time
+ *         updated_at:
+ *           type: string
+ *           format: date-time
  */
+
 
 /**
  * @swagger
  * /umkm:
  *   get:
- *     summary: List semua umkm
- *     tags: [Umkm]
- *     security: [ { bearerAuth: [] } ]
+ *     summary: Get all UMKM
+ *     tags:
+ *       - UMKM
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Daftar umkm
+ *         description: List of UMKM
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Umkm'
- */
-router.get('/', authenticate, controller.getAllUmkm);
-
-/**
- * @swagger
- * /umkm/{id}:
- *   get:
- *     summary: Detail umkm
- *     tags: [Umkm]
- *     security: [ { bearerAuth: [] } ]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema: { type: string }
+ *   post:
+ *     summary: Create a new UMKM
+ *     tags:
+ *       - UMKM
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - nama_lengkap
+ *               - jenis_usaha
+ *             properties:
+ *               nama_lengkap:
+ *                 type: string
+ *               jenis_usaha:
+ *                 type: string
+ *                 enum: [peternak, investor, penyedia_kios]
+ *               lokasi_peternakan:
+ *                 type: string
+ *               jenis_peternakan_utama:
+ *                 type: string
+ *               foto_profile:
+ *                 type: string
  *     responses:
- *       200:
- *         description: Data umkm
+ *       201:
+ *         description: UMKM created
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Umkm'
  */
-router.get('/:id', authenticate, controller.getUmkmById);
-
-/**
- * @swagger
- * /umkm:
- *   post:
- *     summary: Tambah umkm baru
- *     tags: [Umkm]
- *     security: [ { bearerAuth: [] } ]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema: { $ref: '#/components/schemas/CreateUmkmRequest' }
- *     responses:
- *       201:
- *         description: Umkm dibuat
- *         content:
- *           application/json:
- *             schema: { $ref: '#/components/schemas/Umkm' }
- */
-router.post('/', authenticate, controller.createUmkm);
+router.get('/', authenticate, getUmkms);
+router.post('/', authenticate, postUmkm);
 
 /**
  * @swagger
  * /umkm/{id}:
- *   put:
- *     summary: Update data umkm
- *     tags: [Umkm]
- *     security: [ { bearerAuth: [] } ]
+ *   get:
+ *     summary: Get UMKM by ID
+ *     tags:
+ *       - UMKM
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: string }
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema: { $ref: '#/components/schemas/UpdateUmkmRequest' }
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
- *         description: Umkm updated
+ *         description: UMKM detail
  *         content:
  *           application/json:
- *             schema: { $ref: '#/components/schemas/Umkm' }
- */
-router.put('/:id', authenticate, controller.updateUmkm);
-
-/**
- * @swagger
- * /umkm/{id}:
- *   delete:
- *     summary: Hapus umkm
- *     tags: [Umkm]
- *     security: [ { bearerAuth: [] } ]
+ *             schema:
+ *               $ref: '#/components/schemas/Umkm'
+ *   put:
+ *     summary: Update UMKM by ID
+ *     tags:
+ *       - UMKM
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         schema: { type: string }
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Umkm'
+ *     responses:
+ *       200:
+ *         description: UMKM updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Umkm'
+ *   delete:
+ *     summary: Delete UMKM by ID
+ *     tags:
+ *       - UMKM
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
  *     responses:
  *       204:
- *         description: Dihapus
+ *         description: UMKM deleted
  */
-router.delete('/:id', authenticate, controller.deleteUmkm);
+router.get('/:id', authenticate, getUmkm);
+router.put('/:id', authenticate, putUmkm);
+router.delete('/:id', authenticate, deleteUmkm);
 
 export default router;

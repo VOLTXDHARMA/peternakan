@@ -1,29 +1,63 @@
-CREATE TABLE IF NOT EXISTS ternak (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    kode_ternak VARCHAR(50) UNIQUE NOT NULL,
-    jenis_ternak VARCHAR(20) NOT NULL CHECK (jenis_ternak IN ('sapi','kambing','ayam','bebek','domba')),
-    ras VARCHAR(50),
-    jenis_kelamin VARCHAR(10) NOT NULL CHECK (jenis_kelamin IN ('jantan','betina')),
-    tanggal_lahir DATE,
-    umur_bulan INT,
-    berat_awal DECIMAL(8,2),
-    berat_sekarang DECIMAL(8,2),
-    kondisi VARCHAR(20) NOT NULL CHECK (kondisi IN ('sehat','sakit','karantina','mati')),
-    harga_beli DECIMAL(15,2),
-    foto_ternak VARCHAR(255),
-    status VARCHAR(10) NOT NULL CHECK (status IN ('aktif','dijual','mati')),
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
+-- ENUM jenis ternak
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_type WHERE typname = 'jenis_ternak_enum'
+    ) THEN
+        CREATE TYPE jenis_ternak_enum AS ENUM ('sapi','kambing','ayam','bebek','domba');
+    END IF;
+END $$;
+
+-- ENUM jenis kelamin
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_type WHERE typname = 'jenis_kelamin_enum'
+    ) THEN
+        CREATE TYPE jenis_kelamin_enum AS ENUM ('jantan','betina');
+    END IF;
+END $$;
+
+-- ENUM kondisi
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_type WHERE typname = 'kondisi_ternak_enum'
+    ) THEN
+        CREATE TYPE kondisi_ternak_enum AS ENUM ('sehat','sakit','karantina','mati');
+    END IF;
+END $$;
+
+-- ENUM status
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_type WHERE typname = 'status_ternak_enum'
+    ) THEN
+        CREATE TYPE status_ternak_enum AS ENUM ('aktif','dijual','mati');
+    END IF;
+END $$;
+
+
+-- Hapus tabel jika sudah ada
+DROP TABLE IF EXISTS ternak CASCADE;
+
+-- Buat tabel ternak
+CREATE TABLE ternak (
+    id              SERIAL PRIMARY KEY,
+    user_id         INT REFERENCES users(id) ON DELETE CASCADE,
+
+    kode_ternak     VARCHAR(50) UNIQUE NOT NULL,
+    jenis_ternak    jenis_ternak_enum NOT NULL,
+    ras             VARCHAR(20),
+    jenis_kelamin   jenis_kelamin_enum NOT NULL,
+
+    tanggal_lahir   DATE,
+    umur_bulan      INT,
+    berat_awal      DECIMAL,
+    berat_sekarang  DECIMAL,
+
+    kondisi         kondisi_ternak_enum NOT NULL DEFAULT 'sehat',
+    harga_beli      DECIMAL,
+    foto_ternak     TEXT,
+    status          status_ternak_enum NOT NULL DEFAULT 'aktif',
+
+    created_at      TIMESTAMP DEFAULT NOW(),
+    update_at       TIMESTAMP DEFAULT NOW()
 );
-
--- Index biar pencarian cepat
-CREATE INDEX IF NOT EXISTS idx_ternak_user_id ON ternak(user_id);
-CREATE INDEX IF NOT EXISTS idx_ternak_kode ON ternak(kode_ternak);
-CREATE INDEX IF NOT EXISTS idx_ternak_status ON ternak(status);
-
-DROP TRIGGER IF EXISTS update_ternak_updated_at ON ternak;
-CREATE TRIGGER update_ternak_updated_at
-    BEFORE UPDATE ON ternak
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();

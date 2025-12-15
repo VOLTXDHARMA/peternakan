@@ -9,9 +9,8 @@ export const db = new Client({
     host: process.env.DB_HOST || 'localhost',
     port: Number(process.env.DB_PORT) || 5432,
     user: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASS || '123',
-    database: process.env.DB_NAME || 'peternakan',
-    application_name: process.env.DB_APP_NAME || 'peternakan-app'
+    password: process.env.DB_PASS || 'postgres',
+    database: process.env.DB_NAME || 'clean_arch_db'
 });
 
 // Helper functions
@@ -24,7 +23,10 @@ const getSqlFiles = (dir: string): string[] =>
         : [];
 
 const extractTableName = (filename: string): string => {
-    const match = filename.match(/^\d+_(.+?)_(migration|seeder)\.sql$/);
+    // Match filenames like `004_pelatihan_migration.sql`.
+    // Capture the full table name between the leading number and the final suffix
+    // (either `_migration.sql` or `_seeder.sql`).
+    const match = filename.match(/^\d+_(.+?)_(?:migration|seeder)\.sql$/);
     return match ? match[1] : '';
 };
 
@@ -53,13 +55,9 @@ const runMigrations = async () => {
         const table = extractTableName(file);
         if (!table) continue;
 
-        const exists = await tableExists(db, table);
-        if (exists) {
-            console.log(`✓ Skipping migration ${file} (table '${table}' already exists)`);
-        } else {
-            await runSqlFile(db, path.join(MIGRATION_PATH, file));
-            console.log(`✅ Migrated: ${file}`);
-        }
+        // Always run migration files since they are idempotent (CREATE TABLE IF NOT EXISTS, ALTER TABLE with IF NOT EXISTS)
+        await runSqlFile(db, path.join(MIGRATION_PATH, file));
+        console.log(`✅ Migrated: ${file}`);
     }
 
     for (const file of seederFiles) {
@@ -67,11 +65,11 @@ const runMigrations = async () => {
         if (!table) continue;
 
         const empty = await isTableEmpty(db, table);
-        if (!empty) {
-            console.log(`✓ Skipping seeder ${file} (table '${table}' has data)`);
-        } else {
+        if (empty) {
             await runSqlFile(db, path.join(SEEDER_PATH, file));
             console.log(`🌱 Seeded: ${file}`);
+        } else {
+            console.log(`✓ Skipping seeder ${file} (table '${table}' is not empty)`);
         }
     }
 

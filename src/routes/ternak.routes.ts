@@ -35,8 +35,9 @@ const router = Router();
  *         updated_at: { type: string, format: date-time }
  *     CreateTernakRequest:
  *       type: object
- *       required: [kode_ternak, jenis_ternak, jenis_kelamin, kondisi, status]
+ *       required: [user_id, kode_ternak, jenis_ternak, jenis_kelamin, kondisi, status]
  *       properties:
+ *         user_id: { type: string }
  *         kode_ternak: { type: string }
  *         jenis_ternak: { type: string, enum: [sapi, kambing, ayam, bebek, domba] }
  *         ras: { type: string }

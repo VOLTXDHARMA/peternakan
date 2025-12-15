@@ -1,28 +1,8 @@
-INSERT INTO umkm (
-    user_id, nama_lengkap, jenis_usaha, lokasi_peternakan, jenis_peternakan_utama, foto_profile
-) VALUES
-(
-    (SELECT id FROM users WHERE email = 'admin@example.com'),
-    'Budi Santoso',
-    'peternak',
-    'Desa Sukamaju, Kec. Cianjur Selatan, Kab. Cianjur, Jawa Barat',
-    'Sapi Potong & Domba',
-    'profiles/budi-santoso.jpg'
-),
-(
-    (SELECT id FROM users WHERE email = 'investor1@example.com'),
-    'Siti Aminah',
-    'investor',
-    NULL,
-    NULL,
-    'profiles/siti-aminah.jpg'
-),
-(
-    (SELECT id FROM users WHERE email = 'kios1@example.com'),
-    'H. Ahmad Fauzi',
-    'penyedia_kios',
-    'Pasar Hewan Jonggol, Bogor',
-    'Kambing & Domba',
-    'profiles/ahmad-fauzi.jpg'
-);
--- umkm seeder
+TRUNCATE TABLE umkm;
+
+INSERT INTO umkm
+(user_id, nama_lengkap, jenis_usaha, lokasi_peternakan, jenis_peternakan_utama, foto_profile)
+VALUES
+((SELECT id FROM users WHERE username = 'admin'), 'Budi Santoso', 'peternak', 'Jl. Mawar No.12 Bandung', 'Ayam Petelur', 'budi.jpg'),
+((SELECT id FROM users WHERE username = 'investor01'), 'Siti Aminah', 'investor', 'Jl. Melati No.45 Jakarta', 'Sapi', 'siti.png'),
+((SELECT id FROM users WHERE username = 'kios01'), 'Rahmat Hidayat', 'penyedia_kios', 'Jl. Cendana No.9 Surabaya', 'Kambing', 'rahmat.jpg');

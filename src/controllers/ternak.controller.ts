@@ -1,4 +1,7 @@
+// Import tipe yang diperlukan dari Express untuk menangani HTTP request, response, dan middleware
 import { Request, Response, NextFunction } from 'express';
+
+// Import fungsi layanan ternak
 import {
     getAllTernak,
     getTernakDetail,
@@ -6,8 +9,11 @@ import {
     updateTernakById,
     removeTernak
 } from '../services/ternak.service';
+
+// Import utilitas untuk mengirim response sukses yang terstandarisasi
 import { successResponse } from '../utils/response';
 
+// Controller untuk mendapatkan daftar semua ternak
 export const listTernak = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const data = await getAllTernak();
@@ -15,6 +21,7 @@ export const listTernak = async (_req: Request, res: Response, next: NextFunctio
     } catch (err) { next(err); }
 };
 
+// Controller untuk mendapatkan detail ternak berdasarkan ID
 export const getTernak = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = await getTernakDetail(req.params.id);
@@ -22,36 +29,26 @@ export const getTernak = async (req: Request, res: Response, next: NextFunction)
     } catch (err) { next(err); }
 };
 
+// Controller untuk membuat ternak baru
 export const postTernak = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = (req as any).user?.id;
-        if (!userId) return res.status(401).json({ status: 'error', message: 'Unauthorized' });
-        const payload = { ...req.body, user_id: userId };
-        const created = await createTernak(payload);
-        res.status(201).json(created);
+        const created = await createTernak(req.body);
+        successResponse(res, 'Ternak created successfully', created, 201);
     } catch (err) { next(err); }
 };
 
+// Controller untuk memperbarui ternak berdasarkan ID
 export const putTernak = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = (req as any).user?.id;
-        if (!userId) return res.status(401).json({ status: 'error', message: 'Unauthorized' });
-        const existing = await getTernakDetail(req.params.id);
-        if (!existing) return res.status(404).json({ status: 'error', message: 'Ternak not found' });
-        if (existing.user_id !== userId) return res.status(403).json({ status: 'error', message: 'Forbidden' });
         const updated = await updateTernakById(req.params.id, req.body);
-        res.status(200).json(updated);
+        successResponse(res, 'Ternak updated successfully', updated);
     } catch (err) { next(err); }
 };
 
+// Controller untuk menghapus ternak berdasarkan ID
 export const deleteTernakById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = (req as any).user?.id;
-        if (!userId) return res.status(401).json({ status: 'error', message: 'Unauthorized' });
-        const existing = await getTernakDetail(req.params.id);
-        if (!existing) return res.status(404).json({ status: 'error', message: 'Ternak not found' });
-        if (existing.user_id !== userId) return res.status(403).json({ status: 'error', message: 'Forbidden' });
         await removeTernak(req.params.id);
-        res.status(204).send();
+        successResponse(res, 'Ternak deleted successfully', null, 204);
     } catch (err) { next(err); }
 };
