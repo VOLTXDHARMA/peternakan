@@ -5,6 +5,15 @@ BEGIN
     END IF;
 END$$;
 
+-- Buat fungsi untuk update updated_at otomatis
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
 -- 2️⃣ Buat tabel users (jika belum ada)
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
