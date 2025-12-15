@@ -13,7 +13,7 @@ export const findUmkmById = async (id: string | number) => {
 };
 
 export const insertUmkm = async (data: {
-    user_id: number;
+    user_id: string;
     nama_lengkap: string;
     jenis_usaha: string;
     lokasi_peternakan?: string;
@@ -36,7 +36,7 @@ export const insertUmkm = async (data: {
 };
 
 export const updateUmkm = async (id: string | number, data: Partial<{
-    user_id: number;
+    user_id: string;
     nama_lengkap: string;
     jenis_usaha: string;
     lokasi_peternakan: string;

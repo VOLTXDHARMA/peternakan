@@ -13,7 +13,7 @@ export const getAllUmkm = async () => {
 };
 
 // Service untuk mendapatkan detail UMKM berdasarkan ID
-export const getUmkmDetail = async (id: number) => {
+export const getUmkmDetail = async (id: string | number) => {
     const umkm = await findUmkmById(id);
     if (!umkm) {
         throw new Error('UMKM not found');
@@ -23,7 +23,7 @@ export const getUmkmDetail = async (id: number) => {
 
 // Service untuk membuat UMKM baru
 export const createUmkm = async (data: {
-    user_id: number;
+    user_id: string;
     nama_lengkap: string;
     jenis_usaha: string;
     lokasi_peternakan?: string;
@@ -34,8 +34,8 @@ export const createUmkm = async (data: {
 };
 
 // Service untuk mengupdate UMKM
-export const updateUmkmService = async (id: number, data: Partial<{
-    user_id: number;
+export const updateUmkmService = async (id: string | number, data: Partial<{
+    user_id: string;
     nama_lengkap: string;
     jenis_usaha: string;
     lokasi_peternakan: string;
@@ -47,15 +47,15 @@ export const updateUmkmService = async (id: number, data: Partial<{
         return null;
     }
 
-    return await updateUmkm(id, data);
+    return await updateUmkm(id, data as any);
 };
 
 // Service untuk menghapus UMKM
-export const deleteUmkmService = async (id: number) => {
+export const deleteUmkmService = async (id: string | number) => {
     const existingUmkm = await findUmkmById(id);
     if (!existingUmkm) {
         throw new Error('UMKM not found');
     }
 
-    await deleteUmkm(id);
+    return await deleteUmkm(id);
 };
