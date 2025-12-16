@@ -70,11 +70,15 @@ export const registerUser = async (data: {
     // Hash password
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
+    // Normalize and validate role
+    const validRoles = ['peternak', 'investor', 'penyedia_kios', 'admin'];
+    const role = validRoles.includes((data.role || '').toString()) ? data.role : 'peternak';
+
     // Insert user baru
     const newUser = await insertUser({
         ...data,
         password: hashedPassword,
-        role: data.role || 'peternak'
+        role
     });
 
     return newUser;
