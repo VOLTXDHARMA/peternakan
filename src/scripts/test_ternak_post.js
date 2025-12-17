@@ -1,24 +1,37 @@
 (async () => {
   const base = 'http://localhost:3000';
   try {
-    // Login as seeded admin
-    let r = await fetch(base + '/api/auth/login', {
+    // Register a test user and then login to obtain token
+    const username = 'auto_ternak_' + Date.now();
+    const email = username + '@example.com';
+    const password = 'TestPass1234';
+    let r = await fetch(base + '/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: 'admin@example.com', password: 'admin123' })
+      body: JSON.stringify({ username, email, password, nomor_hp: '0812' + Math.floor(Math.random() * 100000000) })
+    });
+    const reg = await r.json();
+    if (!reg.data || !reg.data.id) {
+      console.error('Register failed', r.status, reg);
+      process.exit(1);
+    }
+    r = await fetch(base + '/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
     });
     const login = await r.json();
     console.log('login status', r.status, login.message || login);
-    if (!login.data || !login.data.token) {
+    const token = (login.data && (login.data.token || login.data.accessToken || login.data.access_token)) || null;
+    if (!token) {
       console.error('No token, abort');
       process.exit(1);
     }
-    const token = login.data.token;
 
     const payload = {
-      user_id: login.data.user.id,
+      user_id: reg.data.id,
       kode_ternak: 'kode' + Date.now().toString().slice(-5),
-      jenis_ternak: 'kerbau',
+      jenis_ternak: 'sapi',
       ras: 'local',
       jenis_kelamin: 'jantan',
       tanggal_lahir: '2025-09-16',

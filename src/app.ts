@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.routes';
 import umkmRoutes from './routes/umkm.routes';
 import pelatihanRoutes from './routes/pelatihan.routes';
 import ternakRoutes from './routes/ternak.routes';
+import publicRoutes from './routes/public.routes';
 import { errorHandler } from './middlewares/error.middleware';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './docs/swagger';
@@ -41,7 +42,11 @@ app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/umkm', umkmRoutes);
 app.use('/api/pelatihan', pelatihanRoutes);
+
+import pembiayaanRoutes from './routes/pembiayaan.routes';
+app.use('/api/pembiayaan', pembiayaanRoutes);
 app.use('/api/ternak', ternakRoutes);
+app.use('/public', publicRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
     explorer: true,
