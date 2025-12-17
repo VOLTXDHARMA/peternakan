@@ -55,9 +55,18 @@ const runMigrations = async () => {
         const table = extractTableName(file);
         if (!table) continue;
 
-        // Always run migration files since they are idempotent (CREATE TABLE IF NOT EXISTS, ALTER TABLE with IF NOT EXISTS)
-        await runSqlFile(db, path.join(MIGRATION_PATH, file));
-        console.log(`✅ Migrated: ${file}`);
+        const filePath = path.join(MIGRATION_PATH, file);
+        const sql = fs.readFileSync(filePath, 'utf-8');
+        console.log(`-- Executing migration file: ${file}`);
+        console.log(sql.split('\n').slice(0,5).join('\n'));
+        try {
+            await db.query(sql);
+            console.log(`✅ Migrated: ${file}`);
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : String(err);
+            console.error(`❌ Error running migration ${file}:`, msg);
+            throw err;
+        }
     }
 
     for (const file of seederFiles) {

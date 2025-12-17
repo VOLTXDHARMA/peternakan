@@ -1,5 +1,15 @@
-CREATE TYPE tujuan_pembiayaan_enum AS ENUM ('beli_pakan','beli_alat','pengembangan_usaha','modal_kerja');
-CREATE TYPE status_pengajuan_enum AS ENUM ('draf','kk','surat_usaha','npwp','rekening_koran');
+-- create enums only if they do not exist to avoid dropping types that are in use
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tujuan_pembiayaan_enum') THEN
+        CREATE TYPE tujuan_pembiayaan_enum AS ENUM ('beli_pakan','beli_alat','pengembangan_usaha','modal_kerja');
+    END IF;
+END $$;
+
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'status_pengajuan_enum') THEN
+        CREATE TYPE status_pengajuan_enum AS ENUM ('draf','kk','surat_usaha','npwp','rekening_koran');
+    END IF;
+END $$;
 
 CREATE TABLE IF NOT EXISTS pembiayaan (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
