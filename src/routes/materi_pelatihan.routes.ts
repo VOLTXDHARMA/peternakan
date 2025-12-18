@@ -125,6 +125,34 @@ router.get('/pelatihan/:pelatihanId', authenticate, controller.getByPelatihan);
 
 /**
  * @swagger
+ * /materi_pelatihan/pelatihan/{pelatihanId}/isi-materi:
+ *   get:
+ *     summary: Ambil isi materi (sederhana) berdasarkan pelatihan id
+ *     tags: [MateriPelatihan]
+ *     security: [ { bearerAuth: [] } ]
+ *     parameters:
+ *       - in: path
+ *         name: pelatihanId
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Daftar isi materi (urutan, judul, isi)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   urutan: { type: integer }
+ *                   judul: { type: string }
+ *                   isi: { type: string }
+ */
+router.get('/pelatihan/:pelatihanId/isi-materi', authenticate, controller.getIsiByPelatihan);
+
+/**
+ * @swagger
  * /materi_pelatihan:
  *   post:
  *     summary: Tambah materi baru

@@ -13,7 +13,7 @@ END$$;
 
 CREATE TABLE IF NOT EXISTS umkm (
     id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL UNIQUE,
+    user_id UUID NOT NULL UNIQUE,
     nama_lengkap VARCHAR(100) NOT NULL,
     jenis_usaha jenis_usaha_enum NOT NULL,
     lokasi_peternakan TEXT,

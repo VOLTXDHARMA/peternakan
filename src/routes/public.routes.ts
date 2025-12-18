@@ -7,17 +7,19 @@ import * as progresController from '../controllers/progres_pelatihan.controller'
 const router = Router();
 
 // Public testing endpoints (NO AUTH) - for local/dev testing only
-router.get('/umkm', umkmController.getAllUmkm);
-router.get('/umkm/:id', umkmController.getUmkmById);
-router.post('/umkm', umkmController.createUmkm);
-router.put('/umkm/:id', umkmController.updateUmkm);
+
+router.get('/umkm', umkmController.getUmkms);
+router.get('/umkm/:id', umkmController.getUmkm);
+router.post('/umkm', umkmController.postUmkm);
+router.put('/umkm/:id', umkmController.putUmkm);
 router.delete('/umkm/:id', umkmController.deleteUmkm);
 
-router.get('/pelatihan', pelController.getAllPelatihan);
-router.get('/pelatihan/:id', pelController.getPelatihanById);
-router.post('/pelatihan', pelController.createPelatihan);
-router.put('/pelatihan/:id', pelController.updatePelatihan);
-router.delete('/pelatihan/:id', pelController.deletePelatihan);
+
+router.get('/pelatihan', pelController.getPelatihans);
+router.get('/pelatihan/:id', pelController.getPelatihan);
+router.post('/pelatihan', pelController.postPelatihan);
+router.put('/pelatihan/:id', pelController.putPelatihan);
+router.delete('/pelatihan/:id', pelController.deletePelatihanById);
 
 router.get('/materi_pelatihan', materiController.getAllMateri);
 router.get('/materi_pelatihan/:id', materiController.getMateriById);

@@ -19,6 +19,18 @@ export const getByPelatihan = async (req: Request, res: Response) => {
     res.json({ data: items });
 };
 
+export const getIsiByPelatihan = async (req: Request, res: Response) => {
+    const pelatihanId = req.params.pelatihanId;
+    const items = await service.getByPelatihan(pelatihanId);
+    // Map to simple isi format: urutan, judul, isi (prefer deskripsi, fallback konten_url)
+    const mapped = items.map((it: any) => ({
+        urutan: it.urutan,
+        judul: it.judul_materi,
+        isi: it.deskripsi || it.konten_url || ''
+    }));
+    res.json({ data: mapped });
+};
+
 export const createMateri = async (req: Request, res: Response) => {
     const payload = req.body;
     const created = await service.create(payload);

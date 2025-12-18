@@ -11,3 +11,4 @@ const c = new Client({ host: 'localhost', port: 5432, user: 'postgres', password
     process.exit(1);
   }
 })();
+>>>>>>> origin/dharma-dev
