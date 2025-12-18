@@ -41,7 +41,7 @@ DROP TABLE IF EXISTS ternak CASCADE;
 -- Buat tabel ternak
 CREATE TABLE ternak (
     id              SERIAL PRIMARY KEY,
-    user_id         UUID REFERENCES users(id) ON DELETE CASCADE,
+    user_id         INTEGER REFERENCES users(id) ON DELETE CASCADE,
 
     kode_ternak     VARCHAR(50) UNIQUE NOT NULL,
     jenis_ternak    jenis_ternak_enum NOT NULL,

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as controller from '../controllers/pembiayaan.controller';
+import { authenticate } from '../middlewares/auth.middleware';
 
 
 /**
@@ -16,11 +17,13 @@ const router = Router();
  *   get:
  *     summary: List semua pembiayaan
  *     tags: [Pembiayaan]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Daftar pembiayaan
  */
-router.get('/', controller.getAllPembiayaan);
+router.get('/', authenticate, controller.getAllPembiayaan);
 /**
  * @swagger
  * /pembiayaan/{id}:
@@ -43,6 +46,8 @@ router.get('/:id', controller.getPembiayaanById);
  *   post:
  *     summary: Tambah pembiayaan
  *     tags: [Pembiayaan]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -67,14 +72,14 @@ router.get('/:id', controller.getPembiayaanById);
  *               mitra_tipe: { type: string }
  *               mitra_kontak: { type: string }
  *               mitra_alamat: { type: string }
- *               status_pengajuan: { type: string }
+ *               status_pengajuan: { type: string, enum: ['draf', 'kk', 'surat_usaha', 'npwp', 'rekening_koran'] }
  *               alasan_penolakan: { type: string }
  *               credit_score: { type: integer }
  *     responses:
  *       201:
  *         description: Pembiayaan dibuat
  */
-router.post('/', controller.createPembiayaan);
+router.post('/', authenticate, controller.createPembiayaan);
 /**
  * @swagger
  * /pembiayaan/{id}:

@@ -8,61 +8,7 @@ const router = Router();
  * @swagger
  * tags:
  *   - name: Ternak
- *     description: Manajemen data ternak
- */
-
-/**
- * @swagger
- * components:
- *   schemas:
- *     Ternak:
- *       type: object
- *       properties:
- *         id: { type: string }
- *         user_id: { type: string }
- *         kode_ternak: { type: string }
- *         jenis_ternak: { type: string }
- *         ras: { type: string, nullable: true }
- *         jenis_kelamin: { type: string }
- *         umur_bulan: { type: integer, nullable: true }
- *         berat_awal: { type: number, format: float, nullable: true }
- *         berat_sekarang: { type: number, format: float, nullable: true }
- *         kondisi: { type: string }
- *         harga_beli: { type: number, format: float, nullable: true }
- *         foto_ternak: { type: string, nullable: true }
- *         status: { type: string }
- *         created_at: { type: string, format: date-time }
- *         updated_at: { type: string, format: date-time }
- *     CreateTernakRequest:
- *       type: object
- *       required: [user_id, kode_ternak, jenis_ternak, jenis_kelamin, kondisi, status]
- *       properties:
- *         user_id: { type: string }
- *         kode_ternak: { type: string }
- *         jenis_ternak: { type: string, enum: [sapi, kambing, ayam, bebek, domba] }
- *         ras: { type: string }
- *         jenis_kelamin: { type: string, enum: [jantan, betina] }
- *         tanggal_lahir: { type: string, format: date }
- *         umur_bulan: { type: integer }
- *         berat_awal: { type: number }
- *         berat_sekarang: { type: number }
- *         kondisi: { type: string, enum: [sehat, sakit, karantina, mati] }
- *         harga_beli: { type: number }
- *         foto_ternak: { type: string }
- *         status: { type: string, enum: [aktif, dijual, mati] }
- *     UpdateTernakRequest:
- *       type: object
- *       properties:
- *         ras: { type: string }
- *         jenis_kelamin: { type: string, enum: [jantan, betina] }
- *         tanggal_lahir: { type: string, format: date }
- *         umur_bulan: { type: integer }
- *         berat_awal: { type: number }
- *         berat_sekarang: { type: number }
- *         kondisi: { type: string, enum: [sehat, sakit, karantina, mati] }
- *         harga_beli: { type: number }
- *         foto_ternak: { type: string }
- *         status: { type: string, enum: [aktif, dijual, mati] }
+ *     description: CRUD data ternak
  */
 
 /**
@@ -71,16 +17,11 @@ const router = Router();
  *   get:
  *     summary: List semua ternak
  *     tags: [Ternak]
- *     security: [ { bearerAuth: [] } ]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Daftar ternak
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Ternak'
  */
 router.get('/', authenticate, listTernak);
 
@@ -90,7 +31,8 @@ router.get('/', authenticate, listTernak);
  *   get:
  *     summary: Detail ternak
  *     tags: [Ternak]
- *     security: [ { bearerAuth: [] } ]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -99,9 +41,6 @@ router.get('/', authenticate, listTernak);
  *     responses:
  *       200:
  *         description: Data ternak
- *         content:
- *           application/json:
- *             schema: { $ref: '#/components/schemas/Ternak' }
  */
 router.get('/:id', authenticate, getTernak);
 
@@ -111,18 +50,34 @@ router.get('/:id', authenticate, getTernak);
  *   post:
  *     summary: Tambah ternak baru
  *     tags: [Ternak]
- *     security: [ { bearerAuth: [] } ]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
- *           schema: { $ref: '#/components/schemas/CreateTernakRequest' }
+ *           schema:
+ *             type: object
+ *             required: [user_id, kode_ternak, jenis_ternak, jenis_kelamin, kondisi, status]
+ *             properties:
+ *               user_id: { type: string, description: "ID pemilik (UUID)" }
+ *               kode_ternak: { type: string, description: "Kode unik ternak" }
+ *               jenis_ternak: { type: string, enum: ["sapi", "kambing", "ayam", "bebek", "domba"], description: "Jenis ternak" }
+ *               ras: { type: string, description: "Ras ternak" }
+ *               jenis_kelamin: { type: string, enum: ["jantan", "betina"], description: "Jenis kelamin" }
+ *               tanggal_lahir: { type: string, format: date, description: "Tanggal lahir" }
+ *               umur_bulan: { type: integer, description: "Umur dalam bulan" }
+ *               berat_awal: { type: number, description: "Berat awal dalam kg" }
+ *               berat_sekarang: { type: number, description: "Berat sekarang dalam kg" }
+ *               kondisi: { type: string, enum: ["sehat", "sakit", "karantina", "mati"], description: "Kondisi kesehatan" }
+ *               harga_beli: { type: number, description: "Harga beli" }
+ *               foto_ternak: { type: string, description: "URL foto ternak" }
+ *               status: { type: string, enum: ["aktif", "dijual", "mati"], description: "Status ternak" }
  *     responses:
  *       201:
- *         description: Ternak dibuat
- *         content:
- *           application/json:
- *             schema: { $ref: '#/components/schemas/Ternak' }
+ *         description: Ternak berhasil ditambahkan
+ *       400:
+ *         description: Data tidak valid
  */
 router.post('/', authenticate, postTernak);
 
@@ -132,7 +87,8 @@ router.post('/', authenticate, postTernak);
  *   put:
  *     summary: Update data ternak
  *     tags: [Ternak]
- *     security: [ { bearerAuth: [] } ]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -142,13 +98,24 @@ router.post('/', authenticate, postTernak);
  *       required: true
  *       content:
  *         application/json:
- *           schema: { $ref: '#/components/schemas/UpdateTernakRequest' }
+ *           schema:
+ *             type: object
+ *             properties:
+ *               ras: { type: string }
+ *               jenis_kelamin: { type: string, enum: ["jantan", "betina"] }
+ *               tanggal_lahir: { type: string, format: date }
+ *               umur_bulan: { type: integer }
+ *               berat_awal: { type: number }
+ *               berat_sekarang: { type: number }
+ *               kondisi: { type: string, enum: ["sehat", "sakit", "karantina", "mati"] }
+ *               harga_beli: { type: number }
+ *               foto_ternak: { type: string }
+ *               status: { type: string, enum: ["aktif", "dijual", "mati"] }
  *     responses:
  *       200:
- *         description: Ternak updated
- *         content:
- *           application/json:
- *             schema: { $ref: '#/components/schemas/Ternak' }
+ *         description: Ternak berhasil diupdate
+ *       404:
+ *         description: Ternak tidak ditemukan
  */
 router.put('/:id', authenticate, putTernak);
 
@@ -158,7 +125,8 @@ router.put('/:id', authenticate, putTernak);
  *   delete:
  *     summary: Hapus ternak
  *     tags: [Ternak]
- *     security: [ { bearerAuth: [] } ]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -166,7 +134,9 @@ router.put('/:id', authenticate, putTernak);
  *         schema: { type: string }
  *     responses:
  *       204:
- *         description: Dihapus
+ *         description: Ternak berhasil dihapus
+ *       404:
+ *         description: Ternak tidak ditemukan
  */
 router.delete('/:id', authenticate, deleteTernakById);
 

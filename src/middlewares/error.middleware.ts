@@ -13,6 +13,18 @@ export const errorHandler = (
 ) => {
   // Log pesan error
   logger.error(err.message);
-  // Kirim response error ke client
+
+  // Tangani error spesifik
+  if (err.message === 'Invalid credentials') {
+    return res.status(401).json({ message: err.message });
+  }
+  if (err.message === 'Invalid refresh token') {
+    return res.status(401).json({ message: err.message });
+  }
+  if (err.message === 'Email already registered') {
+    return res.status(400).json({ message: err.message });
+  }
+
+  // Default error response
   res.status(500).json({ message: err.message });
 };

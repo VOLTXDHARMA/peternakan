@@ -18,6 +18,35 @@ export const getPembiayaanById = async (req: Request, res: Response, next: NextF
 
 export const createPembiayaan = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const { nomor_pembiayaan, user_id, tujuan_pembiayaan, nominal_pengajuan, jangka_waktu_bulan, tanggal_pengajuan, status_pengajuan } = req.body;
+
+    // Validasi field yang wajib ada
+    const requiredFields = ['nomor_pembiayaan', 'user_id', 'tujuan_pembiayaan', 'nominal_pengajuan', 'jangka_waktu_bulan', 'tanggal_pengajuan', 'status_pengajuan'];
+    const missingFields = requiredFields.filter(field => !req.body[field]);
+
+    if (missingFields.length > 0) {
+      return res.status(400).json({ message: `Field yang wajib diisi: ${missingFields.join(', ')}` });
+    }
+
+    // Validasi tipe data
+    if (typeof nominal_pengajuan !== 'number' || nominal_pengajuan <= 0) {
+      return res.status(400).json({ message: 'nominal_pengajuan harus berupa angka positif' });
+    }
+    if (typeof jangka_waktu_bulan !== 'number' || jangka_waktu_bulan <= 0) {
+      return res.status(400).json({ message: 'jangka_waktu_bulan harus berupa angka positif' });
+    }
+
+    // Validasi enum values
+    const validTujuan = ['beli_pakan', 'beli_alat', 'pengembangan_usaha', 'modal_kerja'];
+    if (!validTujuan.includes(tujuan_pembiayaan)) {
+      return res.status(400).json({ message: `tujuan_pembiayaan harus salah satu dari: ${validTujuan.join(', ')}` });
+    }
+
+    const validStatus = ['draf', 'kk', 'surat_usaha', 'npwp', 'rekening_koran'];
+    if (!validStatus.includes(status_pengajuan)) {
+      return res.status(400).json({ message: `status_pengajuan harus salah satu dari: ${validStatus.join(', ')}` });
+    }
+
     const created = await service.create(req.body);
     res.status(201).json({ data: created });
   } catch (err) { next(err); }
