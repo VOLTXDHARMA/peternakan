@@ -8,10 +8,10 @@ import {
     createPelatihan,
     updatePelatihanService,
     deletePelatihanService
-} from '../services/pelatihan.service';
+} from '../services/pelatihan.service.js';
 
 // Import utilitas untuk mengirim response sukses yang terstandarisasi
-import { successResponse } from '../utils/response';
+import { successResponse } from '../utils/response.js';
 
 // Controller untuk mendapatkan daftar semua pelatihan
 export const getPelatihans = async (_req: Request, res: Response, next: NextFunction) => {

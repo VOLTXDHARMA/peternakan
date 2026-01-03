@@ -1,9 +1,13 @@
-import fs from 'fs';
-import path from 'path';
+import { readFileSync, existsSync, readdirSync } from 'fs';
+import { join } from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import { Client } from 'pg';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_PORT = Number(process.env.DB_PORT) || 5432;
@@ -11,12 +15,12 @@ const DB_USER = process.env.DB_USER || 'postgres';
 const DB_PASS = process.env.DB_PASS || 'postgres';
 const DB_NAME = process.env.DB_NAME || 'clean_arch_db';
 
-const MIGRATION_PATH = path.join(__dirname, '../database/migration');
-const SEEDER_PATH = path.join(__dirname, '../database/seeder');
+const MIGRATION_PATH = join(__dirname, '../database/migration');
+const SEEDER_PATH = join(__dirname, '../database/seeder');
 
 const getSqlFiles = (dir: string): string[] =>
-    fs.existsSync(dir)
-        ? fs.readdirSync(dir).filter(f => f.endsWith('.sql')).sort()
+    existsSync(dir)
+        ? readdirSync(dir).filter((f: string) => f.endsWith('.sql')).sort()
         : [];
 
 const extractTableName = (filename: string): string => {
@@ -35,7 +39,7 @@ const isTableEmpty = async (client: Client, table: string): Promise<boolean> => 
 };
 
 const runSqlFile = async (client: Client, filePath: string) => {
-    const sql = fs.readFileSync(filePath, 'utf-8');
+    const sql = readFileSync(filePath, 'utf-8');
     await client.query(sql);
 };
 
@@ -52,7 +56,7 @@ const runMigrations = async (client: Client) => {
         if (exists) {
             console.log(`✓ Skipping migration ${file} (table '${table}' already exists)`);
         } else {
-            await runSqlFile(client, path.join(MIGRATION_PATH, file));
+            await runSqlFile(client, join(MIGRATION_PATH, file));
             console.log(`✅ Migrated: ${file}`);
         }
     }
@@ -71,7 +75,7 @@ const runMigrations = async (client: Client) => {
         if (!empty) {
             console.log(`✓ Skipping seeder ${file} (table '${table}' has data)`);
         } else {
-            await runSqlFile(client, path.join(SEEDER_PATH, file));
+            await runSqlFile(client, join(SEEDER_PATH, file));
             console.log(`🌱 Seeded: ${file}`);
         }
     }

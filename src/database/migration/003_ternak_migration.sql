@@ -59,5 +59,13 @@ CREATE TABLE ternak (
     status          status_ternak_enum NOT NULL DEFAULT 'aktif',
 
     created_at      TIMESTAMP DEFAULT NOW(),
-    update_at       TIMESTAMP DEFAULT NOW()
+    updated_at      TIMESTAMP DEFAULT NOW()
 );
+
+-- Rename column if it exists with wrong name
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'ternak' AND column_name = 'update_at') THEN
+        ALTER TABLE ternak RENAME COLUMN update_at TO updated_at;
+    END IF;
+END $$;

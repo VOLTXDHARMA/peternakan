@@ -5,8 +5,8 @@ import {
   createUmkm,
   updateUmkmService,
   deleteUmkmService
-} from '../services/umkm.service';
-import { successResponse } from '../utils/response';
+} from '../services/umkm.service.js';
+import { successResponse } from '../utils/response.js';
 
 export const getUmkms = async (_req: Request, res: Response, next: NextFunction) => {
   try {

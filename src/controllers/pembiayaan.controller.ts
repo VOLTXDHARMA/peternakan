@@ -18,10 +18,11 @@ export const getPembiayaanById = async (req: Request, res: Response, next: NextF
 
 export const createPembiayaan = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { nomor_pembiayaan, user_id, tujuan_pembiayaan, nominal_pengajuan, jangka_waktu_bulan, tanggal_pengajuan, status_pengajuan } = req.body;
+    const { nomor_pembiayaan, tujuan_pembiayaan, nominal_pengajuan, jangka_waktu_bulan, tanggal_pengajuan, status_pengajuan } = req.body;
+    const user_id = (req as any).user.id;
 
     // Validasi field yang wajib ada
-    const requiredFields = ['nomor_pembiayaan', 'user_id', 'tujuan_pembiayaan', 'nominal_pengajuan', 'jangka_waktu_bulan', 'tanggal_pengajuan', 'status_pengajuan'];
+    const requiredFields = ['nomor_pembiayaan', 'tujuan_pembiayaan', 'nominal_pengajuan', 'jangka_waktu_bulan', 'tanggal_pengajuan', 'status_pengajuan'];
     const missingFields = requiredFields.filter(field => !req.body[field]);
 
     if (missingFields.length > 0) {
@@ -47,7 +48,7 @@ export const createPembiayaan = async (req: Request, res: Response, next: NextFu
       return res.status(400).json({ message: `status_pengajuan harus salah satu dari: ${validStatus.join(', ')}` });
     }
 
-    const created = await service.create(req.body);
+    const created = await service.create({ ...req.body, user_id });
     res.status(201).json({ data: created });
   } catch (err) { next(err); }
 };

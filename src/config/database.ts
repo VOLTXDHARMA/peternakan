@@ -1,9 +1,14 @@
 import { Client } from 'pg';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export const db = new Client({
     host: process.env.DB_HOST || 'localhost',
@@ -73,13 +78,17 @@ const runMigrations = async () => {
         const table = extractTableName(file);
         if (!table) continue;
 
-        const empty = await isTableEmpty(db, table);
-        if (empty) {
-            await runSqlFile(db, path.join(SEEDER_PATH, file));
-            console.log(`🌱 Seeded: ${file}`);
-        } else {
-            console.log(`✓ Skipping seeder ${file} (table '${table}' is not empty)`);
+        // Always truncate and seed to ensure data consistency
+        await db.query(`TRUNCATE TABLE ${table} CASCADE;`);
+        // Reset sequence to start from 1 (only for SERIAL columns)
+        await db.query(`ALTER SEQUENCE IF EXISTS ${table}_id_seq RESTART WITH 1;`);
+        await runSqlFile(db, path.join(SEEDER_PATH, file));
+        // Synchronize sequence to max id after seeding (only for integer SERIAL columns)
+        const seqExists = await db.query(`SELECT 1 FROM pg_sequences WHERE schemaname = 'public' AND sequencename = '${table}_id_seq';`);
+        if (seqExists.rows.length > 0) {
+            await db.query(`SELECT setval('${table}_id_seq', (SELECT COALESCE(MAX(id), 1) FROM ${table}));`);
         }
+        console.log(`🌱 Seeded: ${file}`);
     }
 
     console.log('✅ Migration & seeding complete.');

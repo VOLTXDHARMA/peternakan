@@ -9,10 +9,10 @@ import {
     createUser,
     updateUser,
     deleteUser
-} from '../services/user.service';
+} from '../services/user.service.js';
 
 // Import utilitas untuk mengirim response sukses yang terstandarisasi
-import { successResponse } from '../utils/response';
+import { successResponse } from '../utils/response.js';
 
 
 // Controller untuk mendapatkan detail satu user berdasarkan ID

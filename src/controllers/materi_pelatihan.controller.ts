@@ -1,4 +1,4 @@
-import * as service from '../services/materi_pelatihan.service';
+import * as service from '../services/materi_pelatihan.service.js';
 import { Request, Response } from 'express';
 
 export const getAllMateri = async (req: Request, res: Response) => {
@@ -32,7 +32,36 @@ export const getIsiByPelatihan = async (req: Request, res: Response) => {
 };
 
 export const createMateri = async (req: Request, res: Response) => {
-    const payload = req.body;
+    let payload = req.body;
+
+    // Jika urutan tidak disertakan, hitung otomatis berdasarkan pelatihan_id
+    if (!payload.urutan) {
+        const existingMateri = await service.getByPelatihan(payload.pelatihan_id);
+        payload.urutan = existingMateri.length > 0 ? Math.max(...existingMateri.map((m: any) => m.urutan)) + 1 : 1;
+    }
+
+    const created = await service.create(payload);
+    res.status(201).json({ data: created });
+};
+
+export const createMateriByPelatihan = async (req: Request, res: Response) => {
+    const pelatihanId = req.params.pelatihanId;
+    const { judul_materi, tipe_konten, konten_url, durasi_menit, deskripsi } = req.body;
+
+    // Hitung urutan terbaru
+    const existingMateri = await service.getByPelatihan(pelatihanId);
+    const nextUrutan = existingMateri.length > 0 ? Math.max(...existingMateri.map((m: any) => m.urutan)) + 1 : 1;
+
+    const payload = {
+        pelatihan_id: pelatihanId,
+        urutan: nextUrutan,
+        judul_materi,
+        tipe_konten,
+        konten_url,
+        durasi_menit,
+        deskripsi
+    };
+
     const created = await service.create(payload);
     res.status(201).json({ data: created });
 };

@@ -54,10 +54,9 @@ router.get('/:id', controller.getPembiayaanById);
  *         application/json:
  *           schema:
  *             type: object
- *             required: [nomor_pembiayaan, user_id, tujuan_pembiayaan, nominal_pengajuan, jangka_waktu_bulan, status_pengajuan, tanggal_pengajuan]
+ *             required: [nomor_pembiayaan, tujuan_pembiayaan, nominal_pengajuan, jangka_waktu_bulan, status_pengajuan, tanggal_pengajuan]
  *             properties:
  *               nomor_pembiayaan: { type: string }
- *               user_id: { type: string }
  *               tujuan_pembiayaan: { type: string }
  *               nominal_pengajuan: { type: number }
  *               nominal_disetujui: { type: number }

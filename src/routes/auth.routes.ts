@@ -109,6 +109,7 @@ router.post('/refresh', refreshToken);
  *               - username
  *               - email
  *               - password
+ *               - nomor_hp
  *             properties:
  *               username:
  *                 type: string
@@ -118,11 +119,12 @@ router.post('/refresh', refreshToken);
  *                 type: string
  *               nomor_hp:
  *                 type: string
- *                 description: Phone number (optional)
- *               role:
- *                 type: string
- *                 enum: [peternak, investor, penyedia_kios, admin]
- *                 description: User role (optional, defaults to peternak)
+ *                 description: Phone number
+ *           example:
+ *             username: "asaa"
+ *             email: "sas@a.com"
+ *             password: "12342"
+ *             nomor_hp: "081234567890"
  *     responses:
  *       201:
  *         description: User registered successfully

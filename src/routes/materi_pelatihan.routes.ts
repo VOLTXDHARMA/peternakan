@@ -18,8 +18,6 @@ const router = Router();
  *       type: object
  *       properties:
  *         id: { type: string }
- *         pelatihan_id: { type: string }
- *         urutan: { type: integer }
  *         judul_materi: { type: string }
  *         tipe_konten: { type: string }
  *         konten_url: { type: string }
@@ -37,7 +35,7 @@ const router = Router();
  *         durasi_menit: { type: integer }
  *         deskripsi: { type: string }
  *       example:
- *         pelatihan_id: "f6b1eb55-907b-4fd5-8f7f-a7e7dea30618"
+ *         pelatihan_id: 1
  *         urutan: 1
  *         judul_materi: "Intro Manajemen Kandang"
  *         tipe_konten: "video"
@@ -47,7 +45,6 @@ const router = Router();
  *     UpdateMateriRequest:
  *       type: object
  *       properties:
- *         urutan: { type: integer }
  *         judul_materi: { type: string }
  *         tipe_konten: { type: string }
  *         konten_url: { type: string }
@@ -55,7 +52,10 @@ const router = Router();
  *         deskripsi: { type: string }
  *       example:
  *         judul_materi: "Intro Manajemen Kandang (Updated)"
+ *         tipe_konten: "video"
+ *         konten_url: "https://youtube.com/watch?v=contoh-intro-updated"
  *         durasi_menit: 15
+ *         deskripsi: "Video pengantar manajemen kandang (Updated)"
  */
 
 /**
@@ -171,6 +171,46 @@ router.get('/pelatihan/:pelatihanId/isi-materi', authenticate, controller.getIsi
  *             schema: { $ref: '#/components/schemas/MateriPelatihan' }
  */
 router.post('/', authenticate, controller.createMateri);
+
+/**
+ * @swagger
+ * /materi_pelatihan/pelatihan/{pelatihanId}:
+ *   post:
+ *     summary: Tambah materi baru untuk pelatihan tertentu (flow otomatis)
+ *     tags: [MateriPelatihan]
+ *     security: [ { bearerAuth: [] } ]
+ *     parameters:
+ *       - in: path
+ *         name: pelatihanId
+ *         required: true
+ *         schema: { type: string }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [judul_materi, tipe_konten]
+ *             properties:
+ *               judul_materi: { type: string }
+ *               tipe_konten: { type: string }
+ *               konten_url: { type: string }
+ *               durasi_menit: { type: integer }
+ *               deskripsi: { type: string }
+ *             example:
+ *               judul_materi: "Intro Manajemen Kandang"
+ *               tipe_konten: "video"
+ *               konten_url: "https://youtube.com/watch?v=contoh-intro"
+ *               durasi_menit: 12
+ *               deskripsi: "Video pengantar manajemen kandang"
+ *     responses:
+ *       201:
+ *         description: Materi dibuat dengan urutan otomatis
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/MateriPelatihan' }
+ */
+router.post('/pelatihan/:pelatihanId', authenticate, controller.createMateriByPelatihan);
 
 /**
  * @swagger

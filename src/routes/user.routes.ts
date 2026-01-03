@@ -75,6 +75,7 @@ router.get('/:id', authenticate, getUser);
  *               - username
  *               - email
  *               - password
+ *               - nomor_hp
  *             properties:
  *               username:
  *                 type: string
@@ -82,6 +83,14 @@ router.get('/:id', authenticate, getUser);
  *                 type: string
  *               password:
  *                 type: string
+ *               nomor_hp:
+ *                 type: string
+ *                 description: Phone number
+ *           example:
+ *             username: "string"
+ *             email: "string"
+ *             password: "string"
+ *             nomor_hp: "string"
  *     responses:
  *       201:
  *         description: User created successfully

@@ -14,7 +14,7 @@ END $$;
 CREATE TABLE IF NOT EXISTS pembiayaan (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nomor_pembiayaan VARCHAR(50) UNIQUE NOT NULL,
-    user_id UUID NOT NULL REFERENCES users(id),
+    user_id INTEGER NOT NULL REFERENCES users(id),
     tujuan_pembiayaan tujuan_pembiayaan_enum NOT NULL,
     nominal_pengajuan DECIMAL(15,2) NOT NULL,
     nominal_disetujui DECIMAL(15,2),

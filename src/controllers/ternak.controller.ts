@@ -8,10 +8,10 @@ import {
     createTernak,
     updateTernakById,
     removeTernak
-} from '../services/ternak.service';
+} from '../services/ternak.service.js';
 
 // Import utilitas untuk mengirim response sukses yang terstandarisasi
-import { successResponse } from '../utils/response';
+import { successResponse } from '../utils/response.js';
 
 // Controller untuk mendapatkan daftar semua ternak
 export const listTernak = async (_req: Request, res: Response, next: NextFunction) => {
@@ -32,7 +32,8 @@ export const getTernak = async (req: Request, res: Response, next: NextFunction)
 // Controller untuk membuat ternak baru
 export const postTernak = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const created = await createTernak(req.body);
+        const data = { ...req.body, user_id: (req as any).user.id };
+        const created = await createTernak(data);
         successResponse(res, 'Ternak created successfully', created, 201);
     } catch (err) { next(err); }
 };

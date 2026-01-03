@@ -58,9 +58,13 @@ router.get('/:id', authenticate, getTernak);
  *         application/json:
  *           schema:
  *             type: object
- *             required: [user_id, kode_ternak, jenis_ternak, jenis_kelamin, kondisi, status]
+ *             required:
+ *               - kode_ternak
+ *               - jenis_ternak
+ *               - jenis_kelamin
+ *               - kondisi
+ *               - status
  *             properties:
- *               user_id: { type: string, description: "ID pemilik (UUID)" }
  *               kode_ternak: { type: string, description: "Kode unik ternak" }
  *               jenis_ternak: { type: string, enum: ["sapi", "kambing", "ayam", "bebek", "domba"], description: "Jenis ternak" }
  *               ras: { type: string, description: "Ras ternak" }

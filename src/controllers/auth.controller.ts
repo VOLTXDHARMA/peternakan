@@ -3,10 +3,10 @@
 import { Request, Response, NextFunction } from 'express';
 
 // Import fungsi layanan autentikasi
-import { loginUser, refreshAccessToken, registerUser } from '../services/auth.service';
+import { loginUser, refreshAccessToken, registerUser } from '../services/auth.service.js';
 
 // Import utilitas untuk mengirim response sukses yang terstandarisasi
-import { successResponse } from '../utils/response';
+import { successResponse } from '../utils/response.js';
 
 
 // Controller untuk proses login user

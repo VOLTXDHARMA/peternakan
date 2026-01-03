@@ -1,17 +1,21 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import userRoutes from './routes/user.routes';
-import authRoutes from './routes/auth.routes';
-import umkmRoutes from './routes/umkm.routes';
-import pelatihanRoutes from './routes/pelatihan.routes';
-import ternakRoutes from './routes/ternak.routes';
-import publicRoutes from './routes/public.routes';
-import { errorHandler } from './middlewares/error.middleware';
+import userRoutes from './routes/user.routes.js';
+import authRoutes from './routes/auth.routes.js';
+import umkmRoutes from './routes/umkm.routes.js';
+import pelatihanRoutes from './routes/pelatihan.routes.js';
+import materiPelatihanRoutes from './routes/materi_pelatihan.routes.js';
+import progresPelatihanRoutes from './routes/progres_pelatihan.routes.js';
+import ternakRoutes from './routes/ternak.routes.js';
+import publicRoutes from './routes/public.routes.js';
+import pembiayaanRoutes from './routes/pembiayaan.routes.js';
+import dokumenPembiayaanRoutes from './routes/dokumen_pembiayaan.routes.js';
+import { errorHandler } from './middlewares/error.middleware.js';
 import swaggerUi from 'swagger-ui-express';
-import swaggerSpec from './docs/swagger';
-import { apiLimiter } from './middlewares/rateLimiter.middleware';
-import './config/database';
+import swaggerSpec from './docs/swagger.js';
+import { apiLimiter } from './middlewares/rateLimiter.middleware.js';
+import './config/database.js';
 
 const app = express();
 
@@ -42,13 +46,19 @@ app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/umkm', umkmRoutes);
 app.use('/api/pelatihan', pelatihanRoutes);
-
-import pembiayaanRoutes from './routes/pembiayaan.routes';
+app.use('/api/materi_pelatihan', materiPelatihanRoutes);
+app.use('/api/progres_pelatihan', progresPelatihanRoutes);
 app.use('/api/pembiayaan', pembiayaanRoutes);
+app.use('/api/dokumen_pembiayaan', dokumenPembiayaanRoutes);
 app.use('/api/ternak', ternakRoutes);
 app.use('/public', publicRoutes);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+app.use('/api-docs', (req: Request, res: Response, next: NextFunction) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+}, swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
     explorer: true,
     swaggerOptions: {
         tryItOutEnabled: true,

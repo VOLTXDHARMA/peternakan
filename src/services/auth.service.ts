@@ -18,7 +18,7 @@ export const loginUser = async (email: string, password: string) => {
 
     // Generate tokens
     const accessToken = generateToken(
-        { id: user.id, email: user.email, role: user.role },
+        { id: user.id, email: user.email, role: user.role, pelatihan_id: 1 },
         { expiresIn: '15m' }
     );
     const refreshToken = generateToken(
@@ -43,7 +43,7 @@ export const refreshAccessToken = async (refreshToken: string) => {
 
         // Generate access token baru
         const accessToken = generateToken(
-            { id: user.id, email: user.email, role: user.role },
+            { id: user.id, email: user.email, role: user.role, pelatihan_id: 1 },
             { expiresIn: '15m' }
         );
 
