@@ -1,4 +1,5 @@
 import * as service from '../services/materi_pelatihan.service.js';
+import * as pelatihanService from '../services/pelatihan.service.js';
 import { Request, Response } from 'express';
 
 export const getAllMateri = async (req: Request, res: Response) => {
@@ -32,38 +33,86 @@ export const getIsiByPelatihan = async (req: Request, res: Response) => {
 };
 
 export const createMateri = async (req: Request, res: Response) => {
-    let payload = req.body;
+    try {
+        const payload = req.body;
+        const pelatihanId = Number(payload.pelatihan_id);
 
-    // Jika urutan tidak disertakan, hitung otomatis berdasarkan pelatihan_id
-    if (!payload.urutan) {
-        const existingMateri = await service.getByPelatihan(payload.pelatihan_id);
-        payload.urutan = existingMateri.length > 0 ? Math.max(...existingMateri.map((m: any) => m.urutan)) + 1 : 1;
+        if (!pelatihanId) {
+            return res.status(400).json({ message: 'pelatihan_id wajib diisi' });
+        }
+
+        // ✅ VALIDASI FOREIGN KEY SEBELUM INSERT
+        const pelatihan = await pelatihanService.getPelatihanDetail(pelatihanId);
+        if (!pelatihan) {
+            return res.status(400).json({
+                message: 'Pelatihan tidak ditemukan'
+            });
+        }
+
+        // Hitung urutan otomatis
+        if (!payload.urutan) {
+            const existingMateri = await service.getByPelatihan(pelatihanId.toString());
+            payload.urutan =
+                existingMateri.length > 0
+                    ? Math.max(...existingMateri.map((m: any) => m.urutan)) + 1
+                    : 1;
+        }
+
+        payload.pelatihan_id = pelatihanId;
+
+        const created = await service.create(payload);
+        res.status(201).json({ data: created });
+
+    } catch (error: any) {
+        console.error(error);
+        res.status(500).json({
+            message: 'Gagal membuat materi pelatihan'
+        });
     }
-
-    const created = await service.create(payload);
-    res.status(201).json({ data: created });
 };
 
 export const createMateriByPelatihan = async (req: Request, res: Response) => {
-    const pelatihanId = req.params.pelatihanId;
-    const { judul_materi, tipe_konten, konten_url, durasi_menit, deskripsi } = req.body;
+    try {
+        const pelatihanId = Number(req.params.pelatihanId);
 
-    // Hitung urutan terbaru
-    const existingMateri = await service.getByPelatihan(pelatihanId);
-    const nextUrutan = existingMateri.length > 0 ? Math.max(...existingMateri.map((m: any) => m.urutan)) + 1 : 1;
+        if (!pelatihanId) {
+            return res.status(400).json({ message: 'pelatihanId tidak valid' });
+        }
 
-    const payload = {
-        pelatihan_id: pelatihanId,
-        urutan: nextUrutan,
-        judul_materi,
-        tipe_konten,
-        konten_url,
-        durasi_menit,
-        deskripsi
-    };
+        const pelatihan = await pelatihanService.getPelatihanDetail(pelatihanId);
+        if (!pelatihan) {
+            return res.status(404).json({
+                message: 'Pelatihan tidak ditemukan'
+            });
+        }
 
-    const created = await service.create(payload);
-    res.status(201).json({ data: created });
+        const { judul_materi, tipe_konten, konten_url, durasi_menit, deskripsi } = req.body;
+
+        const existingMateri = await service.getByPelatihan(pelatihanId.toString());
+        const nextUrutan =
+            existingMateri.length > 0
+                ? Math.max(...existingMateri.map((m: any) => m.urutan)) + 1
+                : 1;
+
+        const payload = {
+            pelatihan_id: pelatihanId,
+            urutan: nextUrutan,
+            judul_materi,
+            tipe_konten,
+            konten_url,
+            durasi_menit,
+            deskripsi
+        };
+
+        const created = await service.create(payload);
+        res.status(201).json({ data: created });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: 'Gagal membuat materi pelatihan'
+        });
+    }
 };
 
 export const updateMateri = async (req: Request, res: Response) => {
