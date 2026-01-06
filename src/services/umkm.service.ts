@@ -5,7 +5,7 @@ import {
     insertUmkm,
     updateUmkm,
     deleteUmkm
-} from '../repositories/umkm.repository';
+} from '../repositories/umkm.repository.js';
 
 // Service untuk mendapatkan semua UMKM
 export const getAllUmkm = async () => {

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, refreshToken, register } from '../controllers/auth.controller';
+import { login, refreshToken, register } from '../controllers/auth.controller.js';
 
 /* ===== TAMBAHAN START ===== */
 // Pastikan controller memanggil service loginUser dan refreshAccessToken

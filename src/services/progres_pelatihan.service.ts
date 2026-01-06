@@ -1,4 +1,4 @@
-import * as repo from '../repositories/progres_pelatihan.repository';
+import * as repo from '../repositories/progres_pelatihan.repository.js';
 
 export const getAll = async () => {
     return await repo.findAll();

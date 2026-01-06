@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as controller from '../controllers/pembiayaan.controller';
+import * as controller from '../controllers/pembiayaan.controller.js';
 import { authenticate } from '../middlewares/auth.middleware';
 
 

@@ -4,7 +4,7 @@ import {
     insertPelatihan,
     updatePelatihan,
     deletePelatihan
-} from '../repositories/pelatihan.repository';
+} from '../repositories/pelatihan.repository.js';
 
 // Service untuk mendapatkan semua pelatihan
 export const getAllPelatihan = async () => {

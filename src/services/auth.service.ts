@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import { findByEmail, insertUser } from '../repositories/user.repository';
-import { generateToken, verifyToken } from '../utils/jwt';
+import { findByEmail, insertUser } from '../repositories/user.repository.js';
+import { generateToken, verifyToken } from '../utils/jwt.js';
 
 // Service untuk login user
 export const loginUser = async (email: string, password: string) => {

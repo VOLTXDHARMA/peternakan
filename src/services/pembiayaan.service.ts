@@ -1,4 +1,4 @@
-import * as repo from '../repositories/pembiayaan.repository';
+import * as repo from '../repositories/pembiayaan.repository.js';
 
 export const getAll = async () => repo.findAll();
 export const getById = async (id: string) => repo.findById(id);

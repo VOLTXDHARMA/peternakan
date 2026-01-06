@@ -7,7 +7,7 @@ import {
     postUser,
     putUser,
     deleteUserById
-} from '../controllers/user.controller';
+} from '../controllers/user.controller.js';
 import { authenticate } from '../middlewares/auth.middleware';
 
 

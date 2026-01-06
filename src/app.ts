@@ -1,6 +1,9 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import userRoutes from './routes/user.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import umkmRoutes from './routes/umkm.routes.js';
@@ -17,6 +20,9 @@ import swaggerSpec from './docs/swagger.js';
 import { apiLimiter } from './middlewares/rateLimiter.middleware.js';
 import './config/database.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const app = express();
 
 // Enable CORS for all routes
@@ -24,6 +30,9 @@ app.use(cors({
     origin: true, // Allow all origins
     credentials: true
 }));
+
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(express.json());
 app.use((req, res, next) => {

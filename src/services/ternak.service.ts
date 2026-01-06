@@ -6,7 +6,7 @@ import {
     deleteTernak,
     TernakCreate,
     TernakUpdate
-} from '../repositories/ternak.repository';
+} from '../repositories/ternak.repository.js';
 
 export const getAllTernak = async () => {
     return await findAllTernak();

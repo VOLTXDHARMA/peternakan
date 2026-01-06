@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { authenticate } from '../middlewares/auth.middleware';
-import * as controller from '../controllers/materi_pelatihan.controller';
+import * as controller from '../controllers/materi_pelatihan.controller.js';
 
 const router = Router();
 

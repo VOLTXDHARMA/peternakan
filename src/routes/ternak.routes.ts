@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { authenticate } from '../middlewares/auth.middleware';
-import { listTernak, getTernak, postTernak, putTernak, deleteTernakById } from '../controllers/ternak.controller';
+import { listTernak, getTernak, postTernak, putTernak, deleteTernakById } from '../controllers/ternak.controller.js';
 
 const router = Router();
 

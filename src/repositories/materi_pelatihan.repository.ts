@@ -1,4 +1,4 @@
-import { db } from '../config/database';
+import { db } from '../config/database.js';
 
 const baseSelect = `SELECT id, pelatihan_id, urutan, judul_materi, tipe_konten, konten_url, durasi_menit, deskripsi, created_at, updated_at FROM materi_pelatihan`;
 

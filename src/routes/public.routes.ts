@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import * as umkmController from '../controllers/umkm.controller';
-import * as pelController from '../controllers/pelatihan.controller';
-import * as materiController from '../controllers/materi_pelatihan.controller';
-import * as progresController from '../controllers/progres_pelatihan.controller';
+import * as umkmController from '../controllers/umkm.controller.js';
+import * as pelController from '../controllers/pelatihan.controller.js';
+import * as materiController from '../controllers/materi_pelatihan.controller.js';
+import * as progresController from '../controllers/progres_pelatihan.controller.js';
 
 const router = Router();
 

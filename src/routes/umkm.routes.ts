@@ -7,7 +7,7 @@ import {
     postUmkm,
     putUmkm,
     deleteUmkm
-} from '../controllers/umkm.controller';
+} from '../controllers/umkm.controller.js';
 
 const router = Router();
 

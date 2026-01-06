@@ -5,7 +5,7 @@ import {
   postPelatihan,
   putPelatihan,
   deletePelatihanById
-} from '../controllers/pelatihan.controller';
+} from '../controllers/pelatihan.controller.js';
 import { authenticate } from '../middlewares/auth.middleware';
 
 const router = Router();

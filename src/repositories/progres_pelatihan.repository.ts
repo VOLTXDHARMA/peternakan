@@ -1,4 +1,4 @@
-import { db } from '../config/database';
+import { db } from '../config/database.js';
 
 const baseSelect = `SELECT id, user_id, pelatihan_id, materi_id, progress_percent, skor, status, started_at, completed_at, created_at, updated_at FROM progres_pelatihan`;
 
