@@ -1,7 +1,7 @@
 
 // Import tipe dari Express dan fungsi verifikasi JWT
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../utils/jwt';
+import { verifyToken } from '../utils/jwt.js';
 
 
 // Middleware untuk autentikasi JWT

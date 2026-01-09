@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import * as controller from '../controllers/pembiayaan.controller.js';
-import { authenticate } from '../middlewares/auth.middleware';
+import { authenticate } from '../middlewares/auth.middleware.js';
 
 
 /**

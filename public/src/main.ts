@@ -1,3 +1,8 @@
+/**
+ * Entry point aplikasi frontend.
+ * Menginisialisasi komponen utama, mengatur routing, dan logika awal aplikasi.
+ * Contoh: redirect user sesuai role setelah login.
+ */
 import { applyGlobalStyles } from './styles/theme.js';
 import { LoginComponent } from './components/LoginComponent.js';
 import { RegisterComponent } from './components/RegisterComponent.js';
@@ -7,7 +12,7 @@ import authService from './services/authService.js';
 
 class App {
   private appContainer: HTMLElement;
-  private currentView: 'login' | 'register' | 'dashboard' = 'login';
+  private currentView: 'login' | 'register' | 'dashboard' | 'dashboard-peternak' | 'dashboard-investor' | 'dashboard-kios' | 'dashboard-admin' = 'login';
 
   constructor() {
     applyGlobalStyles();
@@ -24,7 +29,8 @@ class App {
   private init(): void {
     // Check if user is already authenticated
     if (authService.isAuthenticated()) {
-      this.showDashboard();
+      const user = authService.getCurrentUser();
+      this.showDashboardByRole(user?.role);
     } else {
       this.showLogin();
     }
@@ -38,7 +44,10 @@ class App {
     
     // Setup event handlers
     loginComponent.onRegisterClick = () => this.showRegister();
-    loginComponent.onLoginSuccess = () => this.showDashboard();
+    loginComponent.onLoginSuccess = () => {
+      const user = authService.getCurrentUser();
+      this.showDashboardByRole(user?.role);
+    };
 
     this.appContainer.appendChild(loginComponent.getElement());
   }
@@ -55,25 +64,19 @@ class App {
     this.appContainer.appendChild(registerComponent.getElement());
   }
 
-  private showDashboard(): void {
-    this.currentView = 'dashboard';
+  // Fungsi untuk menampilkan dashboard sesuai role
+  private showDashboardByRole(role: string): void {
     clearContainer(this.appContainer);
-
-    // Change app container style for dashboard
     this.appContainer.style.padding = '0';
     this.appContainer.style.alignItems = 'flex-start';
 
-    const dashboardComponent = new DashboardComponent();
-    
-    // Setup event handlers
+    // Sementara, gunakan DashboardComponent yang sama, bisa diubah sesuai role
+    const dashboardComponent = new DashboardComponent(role);
     dashboardComponent.onLogout = () => {
-      // Reset app container style
       this.appContainer.style.padding = '20px';
       this.appContainer.style.alignItems = 'center';
-      
       this.showLogin();
     };
-
     this.appContainer.appendChild(dashboardComponent.getElement());
   }
 }

@@ -2,6 +2,7 @@ import { db } from '../config/database.js';
 
 export type TernakCreate = {
     user_id: string;
+    umkm_id?: number;
     kode_ternak: string;
     jenis_ternak: string;
     ras?: string;
@@ -18,7 +19,7 @@ export type TernakCreate = {
 
 export type TernakUpdate = Partial<Omit<TernakCreate, 'user_id' | 'kode_ternak'>> & { kondisi?: string; status?: string };
 
-const baseSelect = `SELECT id, user_id, kode_ternak, jenis_ternak, ras, jenis_kelamin, umur_bulan, berat_awal, berat_sekarang, kondisi, harga_beli, foto_ternak, status, created_at, updated_at FROM ternak`;
+const baseSelect = `SELECT id, user_id, umkm_id, kode_ternak, jenis_ternak, ras, jenis_kelamin, umur_bulan, berat_awal, berat_sekarang, kondisi, harga_beli, foto_ternak, status, created_at, updated_at FROM ternak`;
 
 export const findAllTernak = async () => {
     const result = await db.query(baseSelect + ' ORDER BY created_at DESC');
@@ -32,11 +33,12 @@ export const findTernakById = async (id: string) => {
 
 export const insertTernak = async (data: TernakCreate) => {
     const result = await db.query(
-        `INSERT INTO ternak (user_id, kode_ternak, jenis_ternak, ras, jenis_kelamin, tanggal_lahir, umur_bulan, berat_awal, berat_sekarang, kondisi, harga_beli, foto_ternak, status)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
-         RETURNING id, user_id, kode_ternak, jenis_ternak, ras, jenis_kelamin, umur_bulan, berat_awal, berat_sekarang, kondisi, harga_beli, foto_ternak, status, created_at, updated_at`,
+        `INSERT INTO ternak (user_id, umkm_id, kode_ternak, jenis_ternak, ras, jenis_kelamin, tanggal_lahir, umur_bulan, berat_awal, berat_sekarang, kondisi, harga_beli, foto_ternak, status)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
+         RETURNING id, user_id, umkm_id, kode_ternak, jenis_ternak, ras, jenis_kelamin, umur_bulan, berat_awal, berat_sekarang, kondisi, harga_beli, foto_ternak, status, created_at, updated_at`,
         [
             data.user_id,
+            data.umkm_id || null,
             data.kode_ternak,
             data.jenis_ternak,
             data.ras || null,

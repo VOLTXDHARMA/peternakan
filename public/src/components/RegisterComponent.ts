@@ -1,3 +1,7 @@
+/**
+ * Komponen halaman registrasi aplikasi.
+ * Mengelola input data user baru (username, email, password, dll) dan proses pendaftaran ke backend.
+ */
 import { createElement, showMessage } from '../utils/dom.js';
 import { styles } from '../styles/theme.js';
 import authService from '../services/authService.js';
@@ -12,6 +16,17 @@ export class RegisterComponent {
   private render(): HTMLElement {
     const container = createElement('div', {
       className: 'register-container',
+      style: `
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      `
+    });
+
+    const cardWrapper = createElement('div', {
       style: `
         width: 100%;
         max-width: 450px;
@@ -38,7 +53,8 @@ export class RegisterComponent {
     const footer = this.createFooter();
     card.appendChild(footer);
 
-    container.appendChild(card);
+    cardWrapper.appendChild(card);
+    container.appendChild(cardWrapper);
     return container;
   }
 
@@ -54,7 +70,8 @@ export class RegisterComponent {
         height: 80px;
         background: linear-gradient(135deg, ${styles.colors.primary}, ${styles.colors.secondary});
         border-radius: 50%;
-        display: flex;
+      // Pastikan tidak ada sidebar/menu navigasi di RegisterComponent.
+      // Jika ada, terapkan style full tinggi seperti di DashboardComponent.
         align-items: center;
         justify-content: center;
         margin: 0 auto 20px;
@@ -300,6 +317,9 @@ export class RegisterComponent {
       await authService.register({ username, email, nomor_hp, role, password });
       showMessage('Registrasi berhasil! Silakan login.', 'success');
       setTimeout(() => {
+    /**
+     * Setiap bagian dan fungsi dijelaskan untuk memudahkan pemahaman.
+     */
         this.onLoginClick();
       }, 1500);
     } catch (error) {

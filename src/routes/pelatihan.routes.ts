@@ -6,7 +6,7 @@ import {
   putPelatihan,
   deletePelatihanById
 } from '../controllers/pelatihan.controller.js';
-import { authenticate } from '../middlewares/auth.middleware';
+import { authenticate } from '../middlewares/auth.middleware.js';
 
 const router = Router();
 

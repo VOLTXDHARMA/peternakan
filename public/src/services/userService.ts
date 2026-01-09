@@ -1,7 +1,12 @@
+/**
+ * Service untuk operasi data user.
+ * Berisi fungsi untuk mengambil semua user, detail user, menambah, mengupdate, dan menghapus user.
+ * Digunakan di dashboard/admin.
+ */
 // Import tipe data User dan ApiResponse dari types
-import { User, ApiResponse } from '../types.js';
+import { User, ApiResponse } from '../types';
 // Import authService untuk mendapatkan token autentikasi
-import authService from './authService.js';
+import authService from './authService';
 
 // URL dasar untuk API endpoint
 const API_URL = '/api';

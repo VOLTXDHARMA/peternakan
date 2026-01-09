@@ -1,3 +1,7 @@
+/**
+ * Berisi variabel warna, font, dan style global untuk tampilan frontend.
+ * Digunakan agar tampilan konsisten di seluruh aplikasi.
+ */
 export const styles = {
   colors: {
     primary: '#8B4513',          // Coklat Saddle Brown
@@ -75,9 +79,9 @@ export const applyGlobalStyles = (): void => {
     #app {
       min-height: 100vh;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      align-items: stretch;
+      justify-content: stretch;
+      padding: 0;
     }
 
     @keyframes pulse {

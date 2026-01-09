@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import * as service from '../services/pembiayaan.service';
+import * as service from '../services/pembiayaan.service.js';
 
 export const getAllPembiayaan = async (_req: Request, res: Response, next: NextFunction) => {
   try {

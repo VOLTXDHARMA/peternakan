@@ -1,3 +1,8 @@
+/**
+ * Service untuk autentikasi user.
+ * Berisi fungsi login, register, logout, cek token, dan mengambil data user dari localStorage.
+ * Mengelola token JWT dan status login user.
+ */
 // URL dasar untuk API endpoint
 const API_URL = '/api';
 
@@ -45,6 +50,20 @@ class AuthService {
     const data = await response.json();
     this.token = data.data.accessToken;
     localStorage.setItem('authToken', this.token!);
+    // Simpan user info (decode dari JWT atau dari response jika ada)
+    // Asumsi backend mengirim user info di response.data.user, jika tidak, decode dari JWT
+    if (data.data.user) {
+      localStorage.setItem('currentUser', JSON.stringify(data.data.user));
+    } else {
+      // Coba decode JWT untuk ambil role
+      try {
+        const tokenParts = this.token?.split('.') ?? [];
+        if (tokenParts.length === 3) {
+          const payload = JSON.parse(atob(tokenParts[1]));
+          localStorage.setItem('currentUser', JSON.stringify(payload));
+        }
+      } catch {}
+    }
     return data;
   }
 
@@ -82,10 +101,22 @@ class AuthService {
     localStorage.removeItem('currentUser');
   }
 
+
   // Method untuk mendapatkan token yang tersimpan
   // Return: token JWT atau null jika tidak ada
   getToken(): string | null {
     return this.token;
+  }
+
+  // Method untuk mendapatkan user info yang tersimpan
+  getCurrentUser(): any {
+    const userStr = localStorage.getItem('currentUser');
+    if (!userStr) return null;
+    try {
+      return JSON.parse(userStr);
+    } catch {
+      return null;
+    }
   }
 
   // Method untuk mengecek apakah user sudah login

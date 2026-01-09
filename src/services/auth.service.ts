@@ -9,13 +9,15 @@ export const loginUser = async (email: string, password: string) => {
     if (!user) {
         throw new Error('Invalid credentials');
     }
-
+    // Cek verifikasi
+    if (!user.is_verified) {
+        throw new Error('Akun belum terverifikasi');
+    }
     // Verifikasi password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
         throw new Error('Invalid credentials');
     }
-
     // Generate tokens
     const accessToken = generateToken(
         { id: user.id, email: user.email, role: user.role, pelatihan_id: 1 },
@@ -25,8 +27,16 @@ export const loginUser = async (email: string, password: string) => {
         { id: user.id, email: user.email },
         { expiresIn: '7d' }
     );
-
-    return { accessToken, refreshToken };
+    // Sertakan data user untuk frontend
+    return { accessToken, refreshToken, user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        nomor_hp: user.nomor_hp,
+        is_verified: user.is_verified,
+        created_at: user.created_at
+    }};
 };
 
 // Service untuk refresh access token

@@ -1,3 +1,7 @@
+/**
+ * Definisi tipe data (interface) untuk user, response API, dan entitas lain.
+ * Membantu type safety dan validasi data di TypeScript.
+ */
 // ===== DEFINISI TIPE DATA =====
 // File ini berisi interface TypeScript untuk type safety
 

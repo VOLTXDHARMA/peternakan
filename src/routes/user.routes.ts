@@ -8,7 +8,7 @@ import {
     putUser,
     deleteUserById
 } from '../controllers/user.controller.js';
-import { authenticate } from '../middlewares/auth.middleware';
+import { authenticate } from '../middlewares/auth.middleware.js';
 
 
 // Inisialisasi router untuk endpoint user

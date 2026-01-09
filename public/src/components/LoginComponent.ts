@@ -1,3 +1,9 @@
+/**
+ * Komponen halaman login aplikasi.
+ * Mengelola input email dan password, serta proses autentikasi ke backend.
+ * Jika login berhasil, user diarahkan ke dashboard sesuai peran.
+ * Setiap bagian dan fungsi dijelaskan untuk memudahkan pemahaman.
+ */
 // Import fungsi helper untuk manipulasi DOM
 import { createElement, showMessage } from '../utils/dom.js';
 // Import theme/style untuk konsistensi desain
@@ -28,8 +34,20 @@ export class LoginComponent {
       className: 'login-container',
       style: `
         width: 100%;
-        max-width: 450px;           /* Lebar maksimal 450px */
-        animation: fadeIn 0.6s ease-out;  /* Animasi muncul */
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      `
+    });
+
+    // Buat wrapper untuk card dengan max-width
+    const cardWrapper = createElement('div', {
+      style: `
+        width: 100%;
+        max-width: 450px;
+        animation: fadeIn 0.6s ease-out;
       `
     });
 
@@ -56,7 +74,8 @@ export class LoginComponent {
     const footer = this.createFooter();
     card.appendChild(footer);
 
-    container.appendChild(card);
+    cardWrapper.appendChild(card);
+    container.appendChild(cardWrapper);
     return container;
   }
 

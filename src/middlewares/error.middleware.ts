@@ -16,15 +16,15 @@ export const errorHandler = (
 
   // Tangani error spesifik
   if (err.message === 'Invalid credentials') {
-    return res.status(401).json({ message: err.message });
+    return res.status(401).json({ status: 'error', message: err.message });
   }
   if (err.message === 'Invalid refresh token') {
-    return res.status(401).json({ message: err.message });
+    return res.status(401).json({ status: 'error', message: err.message });
   }
   if (err.message === 'Email already registered') {
-    return res.status(400).json({ message: err.message });
+    return res.status(400).json({ status: 'error', message: err.message });
   }
 
   // Default error response
-  res.status(500).json({ message: err.message });
+  res.status(500).json({ status: 'error', message: err.message || 'Internal server error' });
 };

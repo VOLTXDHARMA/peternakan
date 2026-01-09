@@ -2,7 +2,6 @@ import { Router } from 'express';
 import * as umkmController from '../controllers/umkm.controller.js';
 import * as pelController from '../controllers/pelatihan.controller.js';
 import * as materiController from '../controllers/materi_pelatihan.controller.js';
-import * as progresController from '../controllers/progres_pelatihan.controller.js';
 
 const router = Router();
 
@@ -27,11 +26,5 @@ router.get('/materi_pelatihan/pelatihan/:pelatihanId', materiController.getByPel
 router.post('/materi_pelatihan', materiController.createMateri);
 router.put('/materi_pelatihan/:id', materiController.updateMateri);
 router.delete('/materi_pelatihan/:id', materiController.deleteMateri);
-
-router.get('/progres_pelatihan', progresController.getAllProgres);
-router.get('/progres_pelatihan/:id', progresController.getProgresById);
-router.post('/progres_pelatihan', progresController.createProgres);
-router.put('/progres_pelatihan/:id', progresController.updateProgres);
-router.delete('/progres_pelatihan/:id', progresController.deleteProgres);
 
 export default router;

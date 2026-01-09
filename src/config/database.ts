@@ -1,4 +1,4 @@
-import { Client } from 'pg';
+import { Pool } from 'pg';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -10,7 +10,7 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-export const db = new Client({
+export const db = new Pool({
     host: process.env.DB_HOST || 'localhost',
     port: Number(process.env.DB_PORT) || 5432,
     user: process.env.DB_USER || 'postgres',
@@ -35,17 +35,7 @@ const extractTableName = (filename: string): string => {
     return match ? match[1] : '';
 };
 
-const tableExists = async (client: Client, table: string): Promise<boolean> => {
-    const res = await client.query(`SELECT to_regclass('public.${table}') AS exists`);
-    return res.rows[0].exists !== null;
-};
-
-const isTableEmpty = async (client: Client, table: string): Promise<boolean> => {
-    const res = await client.query(`SELECT COUNT(*) FROM ${table}`);
-    return parseInt(res.rows[0].count, 10) === 0;
-};
-
-const runSqlFile = async (client: Client, filePath: string) => {
+const runSqlFile = async (client: Pool, filePath: string) => {
     const sql = fs.readFileSync(filePath, 'utf-8');
     await client.query(sql);
 };
@@ -94,12 +84,12 @@ const runMigrations = async () => {
     console.log('✅ Migration & seeding complete.');
 };
 
-// Connect and migrate
-db.connect()
-    .then(async () => {
-        console.log('📦 Connected to PostgreSQL');
-        await runMigrations(); // << jalankan migrasi otomatis
-    })
-    .catch((err) => {
-        console.error('❌ DB connection failed:', err.stack);
-    });
+// Export untuk digunakan di tempat lain
+export { runMigrations };
+
+// Test connection in background (non-blocking)
+db.query('SELECT NOW()').then(() => {
+    console.log('📦 Connected to PostgreSQL');
+}).catch((err) => {
+    console.error('❌ DB connection failed:', err.message);
+});
